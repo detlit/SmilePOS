@@ -189,7 +189,11 @@ try {
 
         if ($prev.Ok) {
             $prevTree = (Invoke-Git rev-parse "$($prev.Output)^{tree}").Output
-            if ($prevTree -eq $tree) { Write-Log "ไม่มีไฟล์เปลี่ยนแปลง — ข้ามรอบนี้" 'INFO'; exit 0 }
+            if ($prevTree -eq $tree) {
+                Write-Log "ไม่มีไฟล์เปลี่ยนแปลง — ข้ามการสร้าง commit" 'INFO'
+                if (-not $DryRun) { Invoke-Push | Out-Null }
+                exit 0
+            }
         }
         elseif ($head.Ok) {
             # รอบแรก: ถ้าไฟล์ยังตรงกับ HEAD เป๊ะ ไม่ต้อง commit ซ้ำ แค่ตั้ง branch ให้ชี้ HEAD
