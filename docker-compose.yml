@@ -1,0 +1,127 @@
+# version: "3.8" 
+
+services:
+  # ===========================================
+  # Database Service (PostgreSQL)
+  # ===========================================
+  postgres:
+    image: postgres:15-alpine
+    container_name: pos-postgres-smileR
+    restart: always
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydb
+      TZ: Asia/Bangkok
+    ports:
+      # 5432=postgres เครื่อง, 5433=smileP, 5434=smileB — SmileStore ใช้ 5435
+      - "5460:5432"
+    volumes:
+      # Persistent data storage - ข้อมูลจะเก็บไว้ที่ ./pg-data
+      - ./pg-data:/var/lib/postgresql/data
+    networks:
+      - pos-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U myuser -d mydb" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ===========================================
+  # Web Application (Next.js)
+  # ===========================================
+  app:
+    build: .
+    # image: d2poption/smilestore:latest
+    container_name: pos-app-smileR
+    restart: always
+    ports:
+      # เปิด Port 4400 ให้เครื่องอื่นใน LAN เข้าถึงได้
+      - "4500:3000"
+    environment:
+      # เชื่อมต่อกับ Database ผ่าน container name
+      # ต่อผ่านชื่อ container — ข้างใน network postgres ฟังที่ 5432 เสมอ (ไม่ใช่ port ที่ map ออกเครื่อง)
+      DATABASE_URL: postgresql://myuser:mypassword@postgres:5432/mydb?schema=public
+      NEXT_PUBLIC_API_URL: "http://localhost:4500"
+      TZ: Asia/Bangkok
+      BRIDGE_URL: "http://host.docker.internal:8183"
+      BRIDGE_TOKEN: ${BRIDGE_TOKEN:-}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - pos-network
+    volumes:
+      # - ./public/uploads:/app/.next/standalone/public/uploads
+      # รูปภาพ (โลโก้, สินค้า, QR พร้อมเพย์)
+      - ./data/uploads:/app/public/uploads
+      # Auto backup JSON
+      - ./data/backups:/app/uploads/backups
+      # เอกสาร PDF แนบ (ใบเสนอราคา, ใบสั่งซื้อ)
+      - ./data/doc:/app/uploads/doc
+
+  # ===========================================
+  # Cloudflare Tunnel (External Access)
+  # ===========================================
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: pos-cloudflared-smileR
+    restart: always
+    # แก้ไขบรรทัด command ด้านล่างนี้
+    command: tunnel --protocol http2 run
+    environment:
+      - TUNNEL_TOKEN=
+    depends_on:
+      - app
+    networks:
+      - pos-network
+
+  # ===========================================
+  # pgAdmin (Database Management)
+  # ===========================================
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pos-pgadmin-smileR  
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      # 5050=smileP, 5051=pgadmin เครื่อง, 5052=smileB — SmileStore ใช้ 5055
+      - "5060:80"
+    networks:
+      - pos-network
+    depends_on:
+      - postgres
+# docker ps -a --filter "name=smile"
+# docker logs smile-pgadmin-1 --tail 20
+# Note: To sync container names with this file, run: docker compose up -d
+# netstat -ano | findstr "5050"
+# ===========================================
+# Network Configuration
+# ===========================================
+networks:
+  pos-network:
+    driver: bridge
+    # ให้ทุก Container คุยกันได้ผ่าน network นี้
+
+    # docker exec -it pos-app npx prisma db push   ลง  database
+    # docker rmi <image_id>  ลบ Image
+
+    # เครื่องตัวเอง
+    #docker login
+    #docker build -t d2poption/smilestore:v1 .
+    #docker push d2poption/smilestore:v1
+
+
+    # เครื่องลูกค้า
+    #docker image ls
+    #docker rmi 920c99391d3c  ลบ Image
+
+    #docker login
+    #สร้าง/แก้ไขไฟล์ docker-compose.yml: เอาไฟล์นี้ไปวางที่เครื่องลูกค้าครับ
+    #docker compose up -d
+    #docker compose down
+

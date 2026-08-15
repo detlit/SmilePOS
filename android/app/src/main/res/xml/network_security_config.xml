@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Android 9 (API 28) ขึ้นไปบล็อก HTTP ธรรมดาเป็นค่าเริ่มต้น แต่ server ในร้านเป็น
+  http://192.168.x.x:4001 (IP เปลี่ยนไปตามแต่ละร้าน) จึงต้องเปิด cleartext ให้
+
+  ข้อจำกัดที่ต้องรู้: network security config ของ Android จับคู่ด้วย "ชื่อโฮสต์" เท่านั้น
+  ไม่รองรับช่วง IP แบบ CIDR — <domain>192.168.0.0</domain> จะไม่ match 192.168.1.100
+  และ includeSubdomains ก็ทำงานกับ suffix ของ DNS ไม่ใช่ subnet ของ IP
+  ดังนั้นการจำกัดเฉพาะวง LAN ที่ชั้นนี้ทำไม่ได้จริง ต้องเปิด cleartext เป็นค่าเริ่มต้น
+
+  การจำกัดขอบเขตจริงไปทำที่ชั้นอื่นแทน:
+    - capacitor.config.ts > server.allowNavigation จำกัดว่า WebView เดินทางไปไหนได้บ้าง
+    - หน้าจับคู่ตรวจ /api/health ว่าเป็น Smile POS server จริงก่อนบันทึก
+
+  ถ้าอนาคตย้ายไปใช้ HTTPS ในร้าน ให้เปลี่ยน cleartextTrafficPermitted เป็น false
+  แล้วเพิ่ม <trust-anchors> ของ CA ภายในที่นี่
+-->
+<network-security-config>
+
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+
+</network-security-config>

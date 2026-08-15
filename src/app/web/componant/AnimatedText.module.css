@@ -1,0 +1,24 @@
+/* components/AnimatedText.module.css */
+.container {
+  font-size: 40px;
+  font-weight: bold;
+}
+
+.bounce {
+  display: inline-block;
+  animation: bounce 10s infinite alternate, colorChange 20s infinite alternate;
+}
+
+@keyframes bounce {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(0); }
+  100% { transform: translateY(-2px); }
+}
+
+@keyframes colorChange {
+  25%  { color: rgb(11, 11, 59); }
+ 25%  { color: rgb(189, 107, 0); }
+  50%  { color: #2A6AAA; }
+  75%  { color: #102C4C; }
+ 
+}

@@ -1,0 +1,266 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+bodyDui {
+  background-color: #282c34;
+  color: white;
+  padding: 40px;
+  font-family: Arial;
+  text-align: center;
+}
+
+/* ==========================================================================
+   SmileStore POS — brand palette ("Calm Ocean")
+   --------------------------------------------------------------------------
+   Brand is a calm, desaturated blue. It is deliberately softer than a pure
+   Tailwind blue so that screens which are read for a whole shift stay easy on
+   the eyes. 600 is the primary (5.61:1 on white — AA for text and controls),
+   500 its lighter partner for gradients and hover, 800 the brand text tone on
+   light surfaces.
+
+   Status colours are a separate axis and must NOT be swapped for brand tones:
+   green = success, amber = pending, red = failed. Keeping state off the brand
+   hue is what lets a blue button never read as a status badge.
+
+   Mirrored in src/app/theme/colors.ts — change both together.
+   ========================================================================== */
+@theme {
+  --color-brand-50:  #F3F8FC;
+  --color-brand-100: #E5EEF8;
+  --color-brand-200: #CCDFF1;
+  --color-brand-300: #A6C8E7;
+  --color-brand-400: #6BA3D8;
+  --color-brand-500: #3E86C7;
+  --color-brand-600: #2A6AAA;
+  --color-brand-700: #1E5088;
+  --color-brand-800: #173F6B;
+  --color-brand-900: #102C4C;
+
+  --color-success-50:  #EDF9F3;
+  --color-success-100: #D3F0E2;
+  --color-success-200: #A9E1C6;
+  --color-success-500: #1F9D6B;
+  --color-success-600: #147F56;
+  --color-success-800: #0C5238;
+
+  --color-warning-50:  #FFFBEB;
+  --color-warning-100: #FEF3C7;
+  --color-warning-500: #F59E0B;
+  --color-warning-600: #D97706;
+  --color-warning-800: #92400E;
+
+  --color-danger-50:  #FEF2F2;
+  --color-danger-100: #FEE2E2;
+  --color-danger-500: #EF4444;
+  --color-danger-600: #DC2626;
+  --color-danger-800: #991B1B;
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  /* ความสูงของพื้นที่ทำงานหน้าขาย (โหมดร้านอาหาร)
+     ทั้งสามคอลัมน์ — กริดสินค้า / ใบสั่งซื้อ / คิว — ใช้ค่าเดียวกัน ก้นแผงจะได้เสมอกันพอดี
+     ค่าที่หักออก = ส่วนหัวแอป + ระยะขอบบนล่างของแผง (ไม่มีแถบเครื่องมือด้านบนแล้ว)
+     ปรับสูง/ต่ำทั้งหน้าได้ที่ตัวเลขนี้ตัวเดียว
+     อยู่ที่นี่ไม่ใช่ใน mystyle.module.css เพราะ CSS Module บังคับ pure selector
+     เขียน :root (หรือแม้แต่ :global(:root)) ในไฟล์ .module.css จะพังทั้งไฟล์ด้วย CssSyntaxError */
+  --pos-workspace-h: calc(100vh - 100px);
+
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  /* brand-600, not 500: white text on a primary button needs >= 4.5:1 (5.61). */
+  --primary: #2A6AAA;
+  --primary-foreground: #FFFFFF;
+  /* Neutrals are cool slate so greys sit under the blue as the same family. */
+  --secondary: #F3F7FA;
+  --secondary-foreground: #334155;
+  --muted: #F3F7FA;
+  --muted-foreground: #64748B;
+  --accent: #F3F8FC;
+  --accent-foreground: #173F6B;
+  --destructive: #DC2626;
+  --border: #E2E8F0;
+  --input: #E2E8F0;
+  --ring: #2A6AAA;
+  /* Categorical order, validated for CVD separation — see theme/colors.ts. */
+  --chart-1: #2A6AAA;
+  --chart-2: #E0762A;
+  --chart-3: #1F9D6B;
+  --chart-4: #8B5CF6;
+  --chart-5: #0E9BB5;
+  --sidebar: #F8FBFD;
+  --sidebar-foreground: #151E2E;
+  --sidebar-primary: #2A6AAA;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #F3F8FC;
+  --sidebar-accent-foreground: #173F6B;
+  --sidebar-border: #E6EDF4;
+  --sidebar-ring: #2A6AAA;
+}
+
+.dark {
+  /* Blue-tinted charcoal rather than pure grey, so the dark surface belongs to
+     the same family as the brand. Primary lightens to brand-400 so it still
+     clears contrast against that surface — dark mode is stepped from the ramp,
+     not flipped from the light values. */
+  --background: #0F172A;
+  --foreground: #F1F5F9;
+  --card: #172033;
+  --card-foreground: #F1F5F9;
+  --popover: #172033;
+  --popover-foreground: #F1F5F9;
+  --primary: #6BA3D8;
+  --primary-foreground: #0A1B2E;
+  --secondary: #1E293B;
+  --secondary-foreground: #F1F5F9;
+  --muted: #1E293B;
+  --muted-foreground: #94A3B8;
+  --accent: #1E293B;
+  --accent-foreground: #A6C8E7;
+  --destructive: #F87171;
+  --border: #FFFFFF1A;
+  --input: #FFFFFF26;
+  --ring: #3E86C7;
+  /* Re-stepped for the dark surface (OKLCH L 0.48-0.67), not a flip of :root. */
+  --chart-1: #4C93CC;
+  --chart-2: #D0742F;
+  --chart-3: #2AA377;
+  --chart-4: #8F6FD6;
+  --chart-5: #1C93AC;
+  --sidebar: #131C2B;
+  --sidebar-foreground: #F1F5F9;
+  --sidebar-primary: #6BA3D8;
+  --sidebar-primary-foreground: #0A1B2E;
+  --sidebar-accent: #1E293B;
+  --sidebar-accent-foreground: #A6C8E7;
+  --sidebar-border: #FFFFFF1A;
+  --sidebar-ring: #3E86C7;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* ==========================================================================
+   Bootstrap bridge
+   --------------------------------------------------------------------------
+   bootstrap.min.css is imported AFTER globals.css in src/app/layout.tsx, so
+   every rule here is written one level more specific (.btn.btn-success,
+   .text-success.text-success) to win the cascade. Do not "fix" this by
+   swapping the import order — Tailwind's preflight would then override
+   Bootstrap's reboot and reflow the entire app.
+
+   .btn-success is used throughout as the primary ACTION button (save, confirm,
+   print) — that is brand chrome, so it turns orange. The status utilities
+   below stay green and are only retuned onto the canonical success ramp.
+   ========================================================================== */
+.btn.btn-success {
+  --bs-btn-color: #FFFFFF;
+  --bs-btn-bg: #3E86C7;
+  --bs-btn-border-color: #3E86C7;
+  --bs-btn-hover-color: #FFFFFF;
+  --bs-btn-hover-bg: #2A6AAA;
+  --bs-btn-hover-border-color: #2A6AAA;
+  --bs-btn-active-color: #FFFFFF;
+  --bs-btn-active-bg: #1E5088;
+  --bs-btn-active-border-color: #1E5088;
+  --bs-btn-disabled-color: #FFFFFF;
+  --bs-btn-disabled-bg: #A6C8E7;
+  --bs-btn-disabled-border-color: #A6C8E7;
+  --bs-btn-focus-shadow-rgb: 224, 107, 16;
+}
+
+.btn.btn-outline-success {
+  --bs-btn-color: #2A6AAA;
+  --bs-btn-border-color: #3E86C7;
+  --bs-btn-hover-color: #FFFFFF;
+  --bs-btn-hover-bg: #3E86C7;
+  --bs-btn-hover-border-color: #3E86C7;
+  --bs-btn-active-color: #FFFFFF;
+  --bs-btn-active-bg: #2A6AAA;
+  --bs-btn-active-border-color: #2A6AAA;
+  --bs-btn-disabled-color: #A6C8E7;
+  --bs-btn-disabled-border-color: #CCDFF1;
+  --bs-btn-focus-shadow-rgb: 224, 107, 16;
+}
+
+/* Status utilities keep their meaning — tone only. */
+.text-success.text-success { color: #147F56 !important; }
+.bg-success.bg-success { background-color: #1F9D6B !important; }
+.border-success.border-success { border-color: #1F9D6B !important; }
+.alert-success.alert-success {
+  --bs-alert-color: #0C5238;
+  --bs-alert-bg: #EDF9F3;
+  --bs-alert-border-color: #A9E1C6;
+}
+
+/* Bootstrap's green focus ring would otherwise flash under orange controls. */
+.form-control:focus,
+.form-select:focus {
+  border-color: #A6C8E7;
+  box-shadow: 0 0 0 0.2rem rgba(62, 134, 199, 0.18);
+}
+
+
+/* --------------------------------------------------------------------------
+   Layout rhythm
+   --------------------------------------------------------------------------
+   One gutter for the whole app: 15px between any two columns/cards, which is
+   half of the 30px that Bootstrap's default 1.5rem gutter puts between them.
+   Page shells pad 8px on each side, so the outer margin reads as 8px and every
+   inner gap as 15px. Selector is `body .row` (not `.row`) because Bootstrap's
+   stylesheet is imported after this file and would otherwise win the tie.
+   Sidebar half-gutter lives in componant/menutab_small.tsx (SIDEBAR_GUTTER).
+   -------------------------------------------------------------------------- */
+body .row {
+  --bs-gutter-x: 15px;
+}

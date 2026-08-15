@@ -1,0 +1,32 @@
+-- CreateTable
+CREATE TABLE "public"."Datalist" (
+    "id" SERIAL NOT NULL,
+    "company" TEXT,
+    "code" TEXT,
+    "ProductName" TEXT,
+    "fixname" TEXT,
+    "group" TEXT,
+    "type" TEXT,
+    "subtype" TEXT,
+    "Category" TEXT,
+    "DrugRegistor" TEXT,
+    "Area" TEXT,
+    "CostActual" DECIMAL(65,30),
+    "Unit" TEXT,
+    "price" DECIMAL(65,30),
+    "wholesaleprice" DECIMAL(65,30),
+    "online" DECIMAL(65,30),
+    "PriceA" DECIMAL(65,30),
+    "PriceB" DECIMAL(65,30),
+    "Barcode" TEXT,
+    "Max" DECIMAL(65,30),
+    "Min" DECIMAL(65,30),
+    "ROP" DECIMAL(65,30),
+    "AlarmExp" DECIMAL(65,30),
+    "Show" TEXT,
+    "Child" TEXT,
+    "CI" TEXT,
+    "Remark" TEXT,
+
+    CONSTRAINT "Datalist_pkey" PRIMARY KEY ("id")
+);

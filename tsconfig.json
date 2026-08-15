@@ -1,0 +1,65 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "allowImportingTsExtensions": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      "@mobile-api-registry": [
+        "./src/lib/mobile/api/registry.stub.ts"
+      ]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/app/sale/page.jsx",
+    "src/app/web/dataproduct/bodyproduct.tsx",
+    "src/app/web/dataproduct/product/dataproduct/page.jsx",
+    "src/app/web/dataproduct/product/dataproduct/page.jsx",
+    "src/app/web/componant/menutab_small.jsx",
+    "src/app/web/componant/menuproductheadata.jsx",
+    "src/app/web/componant/menuproducthead.jsx",
+    "src/app/web/componant/headtab.jsx",
+    "src/app/web/receives/createorder.tsx",
+    "src/app/web/printer/page.ts",
+    "src/app/web/printer/page.ts",
+    "src/app/web/sales/printlabel.tsx",
+    "src/app/api/print/route.ts",
+    "src/app/api/print/route.ts",
+    "types/speech.d.ts",
+    ".next/dev/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    // สคริปต์ทดสอบฝั่ง mobile คอมไพล์ด้วย scripts/run-ts.js ซึ่งมีค่า compiler ของตัวเอง
+    // ไม่ควรถูกดึงเข้ามาตรวจตอน next build เพราะใช้ API ของ Node ที่ @types/node รุ่นนี้ยังไม่มี
+    // (node:sqlite) แล้วจะทำให้ build ของแอปพังทั้งที่โค้ดแอปไม่มีปัญหา
+    "scripts/test-*.ts",
+    "scripts/fixtures"
+  ]
+}

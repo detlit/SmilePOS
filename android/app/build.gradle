@@ -1,0 +1,92 @@
+apply plugin: 'com.android.application'
+
+android {
+    namespace = "com.smilepharmacy.pos"
+    compileSdk = rootProject.ext.compileSdkVersion
+    defaultConfig {
+        applicationId "com.smilepharmacy.pos"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "0.1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        aaptOptions {
+             // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
+             // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
+            ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
+        }
+    }
+    // การเซ็น release อ่านจาก environment variable ที่ scripts/build-android.js ตั้งให้
+    // ตั้งใจไม่เก็บ keystore หรือรหัสผ่านไว้ในไฟล์ที่ขึ้น git ตามกฎความปลอดภัยของ repo นี้
+    signingConfigs {
+        release {
+            def keystorePath = System.getenv("SMILEPOS_KEYSTORE_PATH")
+
+            if (keystorePath) {
+                storeFile file(keystorePath)
+                storePassword System.getenv("SMILEPOS_KEYSTORE_PASSWORD")
+                keyAlias System.getenv("SMILEPOS_KEY_ALIAS")
+                keyPassword System.getenv("SMILEPOS_KEY_PASSWORD")
+            }
+        }
+    }
+
+    /**
+     * cloudflared ถูกฝังเป็น jniLibs/<abi>/libcloudflared.so
+     *
+     * useLegacyPackaging = true บังคับให้ไฟล์ถูก "แตกออกมาวางบนดิสก์" ตอนติดตั้ง
+     * ค่าเริ่มต้นของ AGP รุ่นใหม่คือ false (ให้ระบบ map ตรงจาก APK) ซึ่งประหยัดพื้นที่กว่า
+     * แต่ทำให้ไม่มีไฟล์จริงใน nativeLibraryDir ให้ execve() — cloudflared จะรันไม่ได้เลย
+     *
+     * แลกกับขนาดที่ติดตั้งแล้วโตขึ้นประมาณ 40 MB ต่อ ABI ซึ่งเป็นราคาที่ต้องจ่ายของวิธีนี้
+     */
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            // ไม่มี keystore ก็ยังให้ assembleRelease ทำงานได้ (ได้ APK ที่ยังไม่เซ็น)
+            // จะได้ไม่พังตอน build บนเครื่องที่ไม่มีสิทธิ์เข้าถึง keystore
+            if (System.getenv("SMILEPOS_KEYSTORE_PATH")) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+}
+
+repositories {
+    flatDir{
+        dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
+    // NotificationCompat ของแถบสถานะ tunnel — ระบุตรง ๆ แทนที่จะพึ่งว่ามันติดมากับ appcompat
+    implementation "androidx.core:core:$androidxCoreVersion"
+    implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
+    implementation project(':capacitor-android')
+    testImplementation "junit:junit:$junitVersion"
+    androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
+    implementation project(':capacitor-cordova-android-plugins')
+}
+
+apply from: 'capacitor.build.gradle'
+
+try {
+    def servicesJSON = file('google-services.json')
+    if (servicesJSON.text) {
+        apply plugin: 'com.google.gms.google-services'
+    }
+} catch(Exception e) {
+    logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
+}

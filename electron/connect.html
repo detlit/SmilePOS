@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smile Pharmacy POS Launcher</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --surface: #ffffff;
+      --surface-muted: #f8fafc;
+      --line: #dde5ef;
+      --line-strong: #c6d2e1;
+      --text: #172033;
+      --muted: #667085;
+      --green: #148f64;
+      --green-dark: #0f7553;
+      --blue: #2563eb;
+      --amber: #b7791f;
+      --red: #c2410c;
+      --shadow: 0 18px 55px rgba(15, 23, 42, 0.12);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Kanit", Tahoma, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    .page {
+      min-height: 100%;
+      display: grid;
+      place-items: center;
+      padding: 28px;
+    }
+
+    .launcher {
+      width: min(1060px, 100%);
+      min-height: 640px;
+      display: grid;
+      grid-template-columns: 0.95fr 1.25fr;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .brand-pane {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 28px;
+      padding: 34px;
+      background:
+        linear-gradient(180deg, rgba(20, 143, 100, 0.08), rgba(37, 99, 235, 0.06)),
+        #fbfdff;
+      border-right: 1px solid var(--line);
+    }
+
+    .brand-top {
+      display: grid;
+      gap: 18px;
+    }
+
+    .brand-mark {
+      width: 72px;
+      height: 72px;
+      border-radius: var(--radius);
+      display: grid;
+      place-items: center;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+    }
+
+    .brand-mark img {
+      width: 52px;
+      height: 52px;
+      object-fit: contain;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: #ecfdf5;
+      color: var(--green-dark);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .eyebrow-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 4px rgba(20, 143, 100, 0.15);
+    }
+
+    h1,
+    h2,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 34px;
+      line-height: 1.12;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      max-width: 360px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .info-stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    .info-row {
+      display: grid;
+      gap: 4px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+
+    .info-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .info-value {
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 650;
+      word-break: break-word;
+    }
+
+    .url-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .url-button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: var(--radius);
+      background: #ffffff;
+      color: var(--text);
+      border: 1px solid var(--line);
+      cursor: pointer;
+      font-size: 13px;
+      text-align: left;
+    }
+
+    .url-button:hover {
+      border-color: var(--line-strong);
+      background: var(--surface-muted);
+    }
+
+    .url-button svg {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 auto;
+      color: var(--blue);
+    }
+
+    .control-pane {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      padding: 34px;
+      gap: 22px;
+    }
+
+    .pane-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .pane-title {
+      display: grid;
+      gap: 6px;
+    }
+
+    h2 {
+      font-size: 24px;
+      line-height: 1.2;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .version {
+      display: inline-flex;
+      align-items: center;
+      height: 32px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: var(--surface-muted);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      padding: 6px;
+      background: var(--surface-muted);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+
+    .segment {
+      height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border-radius: 6px;
+      color: var(--muted);
+      background: transparent;
+      cursor: pointer;
+      font-weight: 750;
+    }
+
+    .segment svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .segment.active {
+      color: var(--text);
+      background: #ffffff;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+    }
+
+    .mode-panel {
+      display: grid;
+      align-content: start;
+      gap: 18px;
+      padding-top: 4px;
+    }
+
+    .mode-card {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: start;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+    }
+
+    .mode-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius);
+      display: grid;
+      place-items: center;
+      background: #ecfdf5;
+      color: var(--green-dark);
+    }
+
+    .mode-icon.blue {
+      background: #eff6ff;
+      color: var(--blue);
+    }
+
+    .mode-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .mode-copy {
+      display: grid;
+      gap: 5px;
+    }
+
+    .mode-copy strong {
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    label {
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+    }
+
+    input {
+      width: 100%;
+      height: 48px;
+      padding: 0 14px;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      outline: none;
+      color: var(--text);
+      background: #ffffff;
+      font-size: 15px;
+    }
+
+    input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+    }
+
+    input:disabled {
+      opacity: 0.7;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn {
+      min-height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 0 18px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: 800;
+      white-space: nowrap;
+      transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease, border-color 140ms ease;
+    }
+
+    .btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+    }
+
+    .btn:disabled {
+      cursor: wait;
+      opacity: 0.68;
+    }
+
+    .btn-primary {
+      color: #ffffff;
+      background: var(--green);
+      box-shadow: 0 10px 24px rgba(20, 143, 100, 0.26);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--green-dark);
+    }
+
+    .btn-blue {
+      color: #ffffff;
+      background: var(--blue);
+      box-shadow: 0 10px 24px rgba(37, 99, 235, 0.22);
+    }
+
+    .btn-secondary {
+      color: var(--text);
+      background: #ffffff;
+      border: 1px solid var(--line-strong);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: var(--surface-muted);
+    }
+
+    .status {
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: var(--surface-muted);
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .status.success {
+      color: #05603a;
+      background: #ecfdf3;
+      border-color: #abefc6;
+    }
+
+    .status.error {
+      color: #9a3412;
+      background: #fff7ed;
+      border-color: #fed7aa;
+    }
+
+    .status.loading {
+      color: #1d4ed8;
+      background: #eff6ff;
+      border-color: #bfdbfe;
+    }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 2px solid rgba(37, 99, 235, 0.22);
+      border-top-color: var(--blue);
+      animation: spin 780ms linear infinite;
+      flex: 0 0 auto;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .saved-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface-muted);
+    }
+
+    .saved-copy {
+      min-width: 0;
+      display: grid;
+      gap: 3px;
+    }
+
+    .saved-copy span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 750;
+    }
+
+    .saved-copy strong {
+      color: var(--text);
+      font-size: 13px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .meta-item {
+      display: grid;
+      gap: 5px;
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface-muted);
+      min-width: 0;
+    }
+
+    .meta-item span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 750;
+    }
+
+    .meta-item strong {
+      color: var(--text);
+      font-size: 13px;
+      word-break: break-word;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    @media (max-width: 900px) {
+      body {
+        overflow: auto;
+      }
+
+      .page {
+        padding: 18px;
+      }
+
+      .launcher {
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
+
+      .brand-pane {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .input-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="launcher" aria-label="Smile Pharmacy POS Launcher">
+      <aside class="brand-pane">
+        <div class="brand-top">
+          <div class="brand-mark" aria-hidden="true">
+            <img src="../public/app-icon.png" alt="">
+          </div>
+          <div class="eyebrow"><span class="eyebrow-dot"></span>Electron Desktop</div>
+          <div>
+            <h1>Smile Pharmacy POS</h1>
+            <p class="lead">เลือกการเชื่อมต่อสำหรับเครื่องนี้ แล้วเปิดระบบขายหน้าร้านในหน้าต่าง Desktop</p>
+          </div>
+        </div>
+
+        <div class="info-stack">
+          <div class="info-row">
+            <span class="info-label">Local URL</span>
+            <strong class="info-value" id="localUrl">กำลังโหลด...</strong>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Client LAN URL</span>
+            <div class="url-list" id="lanUrls"></div>
+          </div>
+        </div>
+      </aside>
+
+      <section class="control-pane">
+        <header class="pane-header">
+          <div class="pane-title">
+            <h2>Connection Mode</h2>
+            <p class="muted">Server ใช้เครื่องนี้เป็นตัวหลัก, Client เชื่อมไปยังเครื่องหลักในวง LAN หรือ URL ที่กำหนด</p>
+          </div>
+          <span class="version" id="version">v-</span>
+        </header>
+
+        <div>
+          <div class="segmented" role="tablist" aria-label="Connection mode">
+            <button class="segment active" type="button" id="modeServer" data-mode="server" role="tab" aria-selected="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M7 8h.01M7 12h.01M7 16h.01M11 8h6M11 12h6M11 16h6"></path>
+              </svg>
+              Server
+            </button>
+            <button class="segment" type="button" id="modeClient" data-mode="client" role="tab" aria-selected="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="4" y="4" width="16" height="12" rx="2"></rect><path d="M8 20h8M12 16v4"></path>
+              </svg>
+              Client
+            </button>
+          </div>
+
+          <div class="mode-panel" id="serverPanel" role="tabpanel" aria-labelledby="modeServer">
+            <div class="mode-card">
+              <div class="mode-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 2v6"></path><path d="M5 8h14"></path><rect x="4" y="8" width="16" height="12" rx="2"></rect><path d="M8 12h.01M12 12h.01M16 12h.01"></path>
+                </svg>
+              </div>
+              <div class="mode-copy">
+                <strong>Server เครื่องหลัก</strong>
+                <p class="muted">เปิดระบบจากเครื่องนี้ และสร้าง LAN Bridge สำหรับเครื่องลูกในวง Wi-Fi/LAN</p>
+              </div>
+            </div>
+
+            <div class="meta-grid">
+              <div class="meta-item">
+                <span>App / LAN Port</span>
+                <strong id="portValue">4000</strong>
+              </div>
+              <div class="meta-item">
+                <span>Standalone</span>
+                <strong id="standaloneValue">กำลังโหลด...</strong>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="btn btn-primary" type="button" id="btnLocalhost">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 12h14"></path><path d="M12 5l7 7-7 7"></path>
+                </svg>
+                เปิดเป็น Server
+              </button>
+              <button class="btn btn-secondary" type="button" id="btnTestLocal">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M20 6 9 17l-5-5"></path>
+                </svg>
+                ตรวจสอบ
+              </button>
+            </div>
+          </div>
+
+          <div class="mode-panel" id="clientPanel" role="tabpanel" aria-labelledby="modeClient" hidden>
+            <div class="mode-card">
+              <div class="mode-icon blue">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l2-2a5 5 0 0 0-7.07-7.07l-1.1 1.1"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-2 2a5 5 0 0 0 7.07 7.07l1.1-1.1"></path>
+                </svg>
+              </div>
+              <div class="mode-copy">
+                <strong>Client เครื่องลูก</strong>
+                <p class="muted">เชื่อมไปยัง IP เครื่องหลัก, URL ภายในร้าน, หรือ URL ผ่าน Tunnel</p>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="serverIP">Server Address</label>
+              <div class="input-row">
+                <input type="text" id="serverIP" placeholder="192.168.1.100 หรือ http://192.168.1.100:4001" autocomplete="off">
+                <button class="btn btn-secondary" type="button" id="btnTestRemote">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M20 6 9 17l-5-5"></path>
+                  </svg>
+                  Test
+                </button>
+              </div>
+              <span class="hint" id="clientHint">ถ้ากรอกเฉพาะ IP ระบบจะใช้ LAN Bridge port ให้อัตโนมัติ</span>
+            </div>
+
+            <div class="actions">
+              <button class="btn btn-blue" type="button" id="btnConnect">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 12h14"></path><path d="M12 5l7 7-7 7"></path>
+                </svg>
+                เชื่อมต่อ Server
+              </button>
+              <button class="btn btn-secondary" type="button" id="btnClear">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M19 6l-1 14H6L5 6"></path>
+                </svg>
+                ล้างค่า
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <footer class="info-stack">
+          <div class="saved-row" id="savedRow" hidden>
+            <div class="saved-copy">
+              <span>Saved Connection</span>
+              <strong id="savedText">-</strong>
+            </div>
+            <button class="btn btn-secondary" type="button" id="btnUseSaved">ใช้ค่านี้</button>
+          </div>
+          <div class="status" id="status" role="status" aria-live="polite">พร้อมเลือกโหมดการเชื่อมต่อ</div>
+        </footer>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const statusEl = document.getElementById('status');
+    const localUrlEl = document.getElementById('localUrl');
+    const lanUrlsEl = document.getElementById('lanUrls');
+    const versionEl = document.getElementById('version');
+    const portValueEl = document.getElementById('portValue');
+    const standaloneValueEl = document.getElementById('standaloneValue');
+    const clientHintEl = document.getElementById('clientHint');
+    const savedRowEl = document.getElementById('savedRow');
+    const savedTextEl = document.getElementById('savedText');
+    const serverIPInput = document.getElementById('serverIP');
+
+    const controls = Array.from(document.querySelectorAll('button, input'));
+    const modeButtons = Array.from(document.querySelectorAll('[data-mode]'));
+    const panels = {
+      server: document.getElementById('serverPanel'),
+      client: document.getElementById('clientPanel'),
+    };
+
+    let launcherState = null;
+    let activeMode = 'server';
+
+    function iconSpinner() {
+      return '<span class="spinner" aria-hidden="true"></span>';
+    }
+
+    function setStatus(message, type) {
+      statusEl.className = 'status' + (type ? ' ' + type : '');
+      statusEl.innerHTML = type === 'loading' ? iconSpinner() + '<span></span>' : '<span></span>';
+      statusEl.querySelector('span:last-child').textContent = message;
+    }
+
+    function setBusy(isBusy) {
+      controls.forEach((control) => {
+        control.disabled = isBusy;
+      });
+    }
+
+    function setMode(mode) {
+      activeMode = mode;
+      modeButtons.forEach((button) => {
+        const selected = button.dataset.mode === mode;
+        button.classList.toggle('active', selected);
+        button.setAttribute('aria-selected', selected ? 'true' : 'false');
+      });
+
+      panels.server.hidden = mode !== 'server';
+      panels.client.hidden = mode !== 'client';
+
+      if (mode === 'client') {
+        window.setTimeout(() => serverIPInput.focus(), 40);
+      }
+    }
+
+    function addCopyButton(url) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'url-button';
+      button.title = 'คัดลอก URL';
+      button.innerHTML = '<span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+      button.querySelector('span').textContent = url;
+      button.addEventListener('click', async () => {
+        await copyText(url);
+        setStatus('คัดลอก URL แล้ว: ' + url, 'success');
+      });
+      return button;
+    }
+
+    async function copyText(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text);
+      }
+    }
+
+    function renderState() {
+      if (!launcherState) return;
+
+      versionEl.textContent = 'v' + (launcherState.appVersion || '-');
+      localUrlEl.textContent = launcherState.localUrl || '-';
+      portValueEl.textContent = String(launcherState.defaultPort || 4000) + ' / ' + String(launcherState.clientPort || 4001);
+      standaloneValueEl.textContent = launcherState.standaloneAvailable ? (launcherState.lanBridgeRunning ? 'พร้อมใช้งาน · Bridge เปิดแล้ว' : 'พร้อมใช้งาน') : 'ยังไม่พบ bundle';
+      clientHintEl.textContent = 'ถ้ากรอกเฉพาะ IP ระบบจะใช้ LAN Bridge port ' + String(launcherState.clientPort || 4001) + ' ให้อัตโนมัติ';
+
+      lanUrlsEl.textContent = '';
+      const urls = launcherState.lanUrls && launcherState.lanUrls.length ? launcherState.lanUrls : [launcherState.localUrl];
+      urls.filter(Boolean).forEach((url) => lanUrlsEl.appendChild(addCopyButton(url)));
+
+      if (launcherState.savedConnection) {
+        savedTextEl.textContent = launcherState.savedConnection.mode.toUpperCase() + ' · ' + launcherState.savedConnection.url;
+        savedRowEl.hidden = false;
+        if (launcherState.savedConnection.mode === 'client') {
+          serverIPInput.value = launcherState.savedConnection.url;
+        }
+      } else {
+        savedRowEl.hidden = true;
+      }
+    }
+
+    async function refreshState() {
+      launcherState = await window.electronAPI.getLauncherState();
+      renderState();
+    }
+
+    async function connectLocalhost() {
+      setBusy(true);
+      setStatus('กำลังเตรียม Server บนเครื่องนี้...', 'loading');
+
+      try {
+        const result = await window.electronAPI.connectLocalhost();
+        if (result.success) {
+          const lanUrl = result.lanAccess && result.lanAccess.bridge && result.lanAccess.bridge.lanUrls && result.lanAccess.bridge.lanUrls[0];
+          setStatus('เปิด Server + LAN Bridge สำเร็จ' + (lanUrl ? ': ' + lanUrl : '') + ' กำลังเข้าสู่ระบบ...', 'success');
+          return;
+        }
+
+        setStatus('เปิด Server ไม่สำเร็จ: ' + (result.error || 'Unknown error'), 'error');
+      } catch (error) {
+        setStatus('เกิดข้อผิดพลาด: ' + error.message, 'error');
+      } finally {
+        setBusy(false);
+        refreshState().catch(() => {});
+      }
+    }
+
+    async function connectToServer() {
+      const target = serverIPInput.value.trim();
+
+      if (!target) {
+        setStatus('กรุณากรอก Server Address', 'error');
+        serverIPInput.focus();
+        return;
+      }
+
+      setBusy(true);
+      setStatus('กำลังเชื่อมต่อ ' + target + '...', 'loading');
+
+      try {
+        const result = await window.electronAPI.connectServer(target);
+        if (result.success) {
+          setStatus('เชื่อมต่อสำเร็จ กำลังเข้าสู่ระบบ...', 'success');
+          return;
+        }
+
+        setStatus('เชื่อมต่อไม่สำเร็จ: ' + (result.error || 'Unknown error'), 'error');
+      } catch (error) {
+        setStatus('เกิดข้อผิดพลาด: ' + error.message, 'error');
+      } finally {
+        setBusy(false);
+        refreshState().catch(() => {});
+      }
+    }
+
+    async function testConnection(target) {
+      setBusy(true);
+      setStatus('กำลังตรวจสอบการเชื่อมต่อ...', 'loading');
+
+      try {
+        const result = await window.electronAPI.testConnection(target);
+        const checkedUrl = result.url || target || (launcherState && launcherState.localUrl) || 'Server';
+        if (result.ok) {
+          setStatus('Server ตอบกลับแล้ว: ' + checkedUrl + (result.statusCode ? ' (HTTP ' + result.statusCode + ')' : ''), 'success');
+        } else {
+          setStatus('ยังเชื่อมต่อไม่ได้ (' + checkedUrl + '): ' + (result.error || ('HTTP ' + result.statusCode)), 'error');
+        }
+      } catch (error) {
+        setStatus('เกิดข้อผิดพลาด: ' + error.message, 'error');
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    async function clearSavedConnection() {
+      await window.electronAPI.clearSavedIP();
+      serverIPInput.value = '';
+      setStatus('ล้างค่าการเชื่อมต่อแล้ว', 'success');
+      await refreshState();
+    }
+
+    async function useSavedConnection() {
+      if (!launcherState || !launcherState.savedConnection) return;
+
+      if (launcherState.savedConnection.mode === 'server') {
+        setMode('server');
+        await connectLocalhost();
+        return;
+      }
+
+      setMode('client');
+      serverIPInput.value = launcherState.savedConnection.url;
+      await connectToServer();
+    }
+
+    modeButtons.forEach((button) => {
+      button.addEventListener('click', () => setMode(button.dataset.mode));
+    });
+
+    document.getElementById('btnLocalhost').addEventListener('click', connectLocalhost);
+    document.getElementById('btnConnect').addEventListener('click', connectToServer);
+    document.getElementById('btnTestLocal').addEventListener('click', () => testConnection());
+    document.getElementById('btnTestRemote').addEventListener('click', () => testConnection(serverIPInput.value.trim()));
+    document.getElementById('btnClear').addEventListener('click', clearSavedConnection);
+    document.getElementById('btnUseSaved').addEventListener('click', useSavedConnection);
+    serverIPInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        connectToServer();
+      }
+    });
+
+    window.addEventListener('load', async () => {
+      if (!window.electronAPI) {
+        setStatus('ไม่พบ Electron preload API', 'error');
+        return;
+      }
+
+      try {
+        await refreshState();
+        setMode(launcherState && launcherState.savedConnection ? launcherState.savedConnection.mode : 'server');
+      } catch (error) {
+        setStatus('โหลดสถานะไม่สำเร็จ: ' + error.message, 'error');
+      }
+    });
+  </script>
+</body>
+</html>

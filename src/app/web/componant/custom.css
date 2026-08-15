@@ -1,0 +1,127 @@
+.custom-pills .nav-link {
+  color: #19873a; /* เขียว Bootstrap (success) */
+/*  border: 1px solid #198754;*/
+}
+
+.custom-pills .nav-link.active {
+  background-color: #198728 !important;
+  color: white !important;
+}
+
+.document-modal {
+  z-index: 1060 !important;
+}
+
+.document-modal .modal-dialog,
+.document-modal-dialog {
+  pointer-events: auto !important;
+}
+
+.document-modal .modal-content {
+  pointer-events: auto !important;
+  position: relative;
+}
+
+.document-modal .modal-header,
+.document-modal .modal-body,
+.document-modal .modal-footer {
+  position: relative;
+  z-index: 1;
+}
+
+.document-modal .dropdown-menu,
+.document-modal .react-datepicker-popper {
+  z-index: 1080 !important;
+}
+
+.document-modal-backdrop {
+  z-index: 1055 !important;
+}
+
+.customer-picker-modal {
+  z-index: 1095 !important;
+}
+
+.customer-picker-modal .modal-dialog,
+.customer-picker-modal .modal-content {
+  pointer-events: auto !important;
+}
+
+.customer-picker-modal .dropdown-menu,
+.customer-picker-modal .react-datepicker-popper {
+  z-index: 1110 !important;
+}
+
+.customer-picker-modal-backdrop {
+  z-index: 1090 !important;
+}
+
+.product-picker-modal {
+  z-index: 1115 !important;
+}
+
+.product-picker-modal .modal-dialog,
+.product-picker-modal .modal-content {
+  pointer-events: auto !important;
+}
+
+.product-picker-modal-backdrop {
+  z-index: 1110 !important;
+}
+
+.detail-editor-modal {
+  z-index: 1135 !important;
+}
+
+.detail-editor-modal .modal-dialog,
+.detail-editor-modal .modal-content {
+  pointer-events: auto !important;
+}
+
+.detail-editor-modal-backdrop {
+  z-index: 1130 !important;
+}
+
+.react-datepicker-popper {
+  z-index: 1090 !important;
+}
+
+.datepicker-popper-high {
+  z-index: 1090 !important;
+  position: fixed !important;
+}
+
+.datepicker-wrapper-full,
+.datepicker-wrapper-full .react-datepicker__input-container {
+  width: 100% !important;
+  display: block !important;
+}
+
+.datepicker-input-clean {
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-family: "kanit", sans-serif;
+  font-size: 13px;
+  color: #1f2937;
+  width: 100%;
+  min-width: 0;
+  padding: 0 !important;
+  cursor: pointer;
+}
+
+.datepicker-input-clean:focus {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.react-datepicker {
+  font-family: "kanit", sans-serif !important;
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+  background-color: #2A6AAA !important;
+  color: white !important;
+}

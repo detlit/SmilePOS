@@ -1,0 +1,247 @@
+{
+  "name": "smilepharmacy",
+  "version": "0.1.0",
+  "description": "Smile Pharmacy POS desktop and web application",
+  "author": "Smile Pharmacy",
+  "private": true,
+  "main": "electron/main.js",
+  "scripts": {
+    "dev": "next dev",
+    "dev:turbo": "next dev --turbopack",
+    "build": "npx prisma generate   && next build",
+    "start": "next start",
+    "lint": "next lint",
+    "electron-dev": "concurrently -k \"cross-env BROWSER=none npm run dev\" \"wait-on tcp:3000 && cross-env ELECTRON_APP_URL=http://localhost:3000 electron .\"",
+    "launcher": "electron .",
+    "build:electron": "node scripts/build-electron.js",
+    "build:electron:dir": "node scripts/build-electron.js --dir",
+    "build:electron:fast": "node scripts/build-electron.js --skip-next-build",
+    "build:electron:msi": "node scripts/build-electron.js --skip-next-build --msi",
+    "build:electron:msi:full": "node scripts/build-electron.js --msi",
+    "dist": "npm run build:electron",
+    "dist:dir": "npm run build:electron:dir",
+    "dist:msi": "npm run build:electron:msi:full",
+    "android:sync": "cap sync android",
+    "android:open": "cap open android",
+    "android:dev": "cap run android --livereload --external",
+    "android:emulator": "node scripts/run-android-emulator.js",
+    "android:emulator:build": "node scripts/run-android-emulator.js --build",
+    "android:emulator:standalone": "node scripts/run-android-emulator.js --build-standalone",
+    "android:emulator:pair": "node scripts/run-android-emulator.js --build --server=10.0.2.2:4500",
+    "android:emulator:reset": "node scripts/run-android-emulator.js --reset",
+    "build:android": "node scripts/build-android.js",
+    "build:android:release": "node scripts/build-android.js --release",
+    "build:android:bundle": "node scripts/build-android.js --release --bundle",
+    "build:android:standalone": "node scripts/build-android-standalone.js",
+    "build:android:standalone:release": "node scripts/build-android-standalone.js --release",
+    "build:android:standalone:bundle": "node scripts/build-android-standalone.js --release --bundle",
+    "build:mobile-web": "node scripts/build-android-standalone.js --web-only",
+    "fetch:cloudflared": "node scripts/fetch-cloudflared.js",
+    "gen:sqlite-schema": "node scripts/gen-sqlite-schema.js",
+    "test:mobile-db": "node scripts/run-ts.js scripts/test-prisma-lite.ts",
+    "test:mobile-jwt": "node scripts/run-ts.js scripts/test-mobile-jwt.ts",
+    "test:mobile-sql": "node scripts/run-ts.js scripts/test-pg-dialect.ts",
+    "test:mobile-api": "node scripts/run-ts.js scripts/test-local-api.ts --project scripts/tsconfig.mobile-test.json",
+    "test:mobile": "npm run test:mobile-db && npm run test:mobile-jwt && npm run test:mobile-sql && npm run test:mobile-api",
+    "autosave": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/git-autosave.ps1",
+    "autosave:dry": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/git-autosave.ps1 -DryRun",
+    "autosave:log": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"Get-Content \\\"$env:LOCALAPPDATA\\SmileStoreAutosave\\autosave.log\\\" -Tail 30 -Encoding utf8\"",
+    "save": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/git-manual-save.ps1"
+  },
+  "dependencies": {
+    "@capacitor-community/sqlite": "^8.1.1",
+    "@capacitor-mlkit/barcode-scanning": "^8.1.0",
+    "@capacitor/android": "^8.5.0",
+    "@capacitor/app": "^8.1.1",
+    "@capacitor/core": "^8.5.0",
+    "@capacitor/network": "^8.0.1",
+    "@capacitor/preferences": "^8.0.1",
+    "@capacitor/screen-orientation": "^8.0.1",
+    "@capacitor/splash-screen": "^8.0.2",
+    "@capacitor/status-bar": "^8.0.3",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@fortawesome/fontawesome-svg-core": "^6.4.0",
+    "@fortawesome/free-brands-svg-icons": "^6.4.0",
+    "@fortawesome/free-regular-svg-icons": "^6.4.0",
+    "@fortawesome/free-solid-svg-icons": "^6.4.0",
+    "@fortawesome/react-fontawesome": "^0.2.0",
+    "@heroui/dropdown": "^2.3.24",
+    "@heroui/react": "^2.8.4",
+    "@mediapipe/tasks-vision": "^0.10.22-rc.20250304",
+    "@mui/material": "^7.3.4",
+    "@mui/x-data-grid": "^8.15.0",
+    "@mui/x-date-pickers": "^8.15.0",
+    "@pdf-lib/fontkit": "^1.1.1",
+    "@prisma/adapter-pg": "5.22.0",
+    "@prisma/client": "5.22.0",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-label": "^2.1.7",
+    "@radix-ui/react-popover": "^1.1.15",
+    "@radix-ui/react-radio-group": "^1.3.8",
+    "@radix-ui/react-slot": "^1.2.3",
+    "@syncfusion/ej2-react-dropdowns": "^30.2.5",
+    "@tensorflow/tfjs": "^4.22.0",
+    "@tillpos/xml-escpos-helper": "^0.3.1",
+    "@yudiel/react-qr-scanner": "^2.4.1",
+    "apexcharts": "^5.3.2",
+    "axios": "^1.11.0",
+    "bcryptjs": "^3.0.3",
+    "body-parser": "^2.2.0",
+    "bootstrap": "^5.3.8",
+    "bootstrap-icons": "^1.13.1",
+    "browser-image-compression": "^2.0.2",
+    "chart.js": "^4.5.0",
+    "class-variance-authority": "^0.7.1",
+    "cloudinary": "^2.7.0",
+    "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
+    "compressorjs": "^1.2.1",
+    "cors": "^2.8.5",
+    "date-fns": "^4.1.0",
+    "dayjs": "^1.11.18",
+    "express": "^5.1.0",
+    "face-api.js": "^0.22.2",
+    "formidable": "^3.5.4",
+    "framer-motion": "^12.23.12",
+    "geist": "^1.4.2",
+    "google-translate-api-x": "^10.7.2",
+    "html2pdf.js": "^0.12.1",
+    "html5-qrcode": "^2.3.8",
+    "jsbarcode": "^3.12.3",
+    "jsonwebtoken": "^9.0.2",
+    "jwt-decode": "^4.0.0",
+    "lucide-react": "^0.539.0",
+    "moment": "^2.30.1",
+    "mongoose": "^8.18.2",
+    "next": "^15.4.8",
+    "next-cloudinary": "^6.16.0",
+    "pdf-to-printer": "^1.8.0-beta.0",
+    "promptpay-qr": "^0.5.0",
+    "qrcode.react": "^4.2.0",
+    "react": "^19.2.3",
+    "react-apexcharts": "^1.7.0",
+    "react-bootstrap": "^2.10.10",
+    "react-calendar": "^6.0.0",
+    "react-chartjs-2": "^5.3.0",
+    "react-datepicker": "^8.8.0",
+    "react-day-picker": "^9.8.1",
+    "react-dom": "^19.2.3",
+    "react-icons": "^5.5.0",
+    "react-image-file-resizer": "^0.4.8",
+    "react-pro-sidebar": "^1.1.0",
+    "react-qr-code": "^2.0.18",
+    "react-resize-detector": "^12.3.0",
+    "react-router-dom": "^7.8.2",
+    "react-to-print": "^3.1.1",
+    "react-webcam": "^7.2.0",
+    "react-widgets": "^5.8.6",
+    "recharts": "^3.2.1",
+    "sharp": "^0.34.4",
+    "skia-canvas": "^3.0.6",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
+    "sonner": "^2.0.7",
+    "tailwind-merge": "^3.3.1",
+    "tw-animate-css": "^1.4.0",
+    "use-debounce": "^10.0.5",
+    "vosk-browser": "^0.0.8",
+    "ws": "^8.18.3",
+    "xlsx": "^0.18.5",
+    "zustand": "^5.0.8"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.5.0",
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/escpos": "^2.5.5",
+    "@types/express": "^5.0.5",
+    "@types/faker": "^6.6.8",
+    "@types/formidable": "^3.4.5",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^20.19.25",
+    "@types/react-dom": "19.1.7",
+    "concurrently": "^9.2.1",
+    "cross-env": "^10.1.0",
+    "electron": "^39.2.6",
+    "electron-builder": "^26.0.12",
+    "eslint": "^9",
+    "eslint-config-next": "15.4.6",
+    "lodash.debounce": "^4.0.8",
+    "prisma": "5.22.0",
+    "tailwindcss": "^4",
+    "ts-node": "^10.9.2",
+    "typescript": "5.7.2",
+    "wait-on": "^9.0.3"
+  },
+  "overrides": {
+    "@types/react-dom": "19.1.7",
+    "react-error-overlay": "$react-error-overlay"
+  },
+  "build": {
+    "appId": "com.smilepharmacy.app",
+    "productName": "SmilePharmacy",
+    "npmRebuild": false,
+    "extraMetadata": {
+      "main": "electron/main.js",
+      "dependencies": {}
+    },
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "public/app-icon.png"
+    },
+    "compression": "store",
+    "artifactName": "${productName}-${version}-${arch}.${ext}",
+    "extraResources": [
+      {
+        "from": ".next/standalone",
+        "to": "standalone",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "public",
+        "to": "standalone/public",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": ".next/static",
+        "to": "standalone/.next/static",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "smartcard-agent",
+        "to": "smartcard-agent",
+        "filter": [
+          "**/*",
+          "!node_modules/**"
+        ]
+      }
+    ],
+    "files": [
+      {
+        "from": "electron",
+        "to": "electron",
+        "filter": [
+          "**/*"
+        ]
+      },
+      "package.json"
+    ],
+    "directories": {
+      "output": "dist_electron"
+    }
+  }
+}

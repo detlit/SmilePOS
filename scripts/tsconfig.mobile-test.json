@@ -1,0 +1,27 @@
+{
+  "// หมายเหตุ": [
+    "ใช้กับสคริปต์ทดสอบฝั่ง mobile เท่านั้น",
+    "map ชื่อโมดูลให้ตรงกับที่ next.config.ts ทำตอน build โหมด mobile",
+    "เพื่อให้ route handler ตัวจริงถูกรันบน Node ได้โดยใช้ SQLite แทน PostgreSQL"
+  ],
+  "compilerOptions": {
+    "target": "es2022",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "jsx": "react-jsx",
+    "lib": ["es2022", "dom"],
+    "baseUrl": "..",
+    "paths": {
+      "@/lib/prisma": ["src/lib/mobile/db/prismaLite.ts"],
+      "@/lib/jwt": ["src/lib/mobile/jwt.ts"],
+      "next/server": ["src/lib/mobile/api/next-server-shim.ts"],
+      "next/cache": ["src/lib/mobile/api/next-cache-shim.ts"],
+      "@mobile-api-registry": ["scripts/fixtures/test-registry.ts"],
+      "@/*": ["src/*"]
+    }
+  }
+}

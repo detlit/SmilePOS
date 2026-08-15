@@ -1,0 +1,27 @@
+# ปรับ line ending ให้คงที่ข้ามเครื่อง — เก็บใน repo เป็น LF, checkout ตาม OS
+* text=auto
+
+# สคริปต์ฝั่ง Windows ต้องเป็น CRLF ไม่งั้นรันไม่ผ่าน
+*.bat   text eol=crlf
+*.cmd   text eol=crlf
+*.ps1   text eol=crlf
+
+# สคริปต์ฝั่ง Unix / container
+*.sh    text eol=lf
+
+# ไฟล์ไบนารี — ห้าม normalize
+*.ttf   binary
+*.otf   binary
+*.woff  binary
+*.woff2 binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.pdf   binary
+*.wasm  binary
+
+# ไฟล์ที่ไม่ต้องนับใน language stats / diff ของ GitHub
+package-lock.json  linguist-generated=true -diff
+yarn.lock          linguist-generated=true -diff

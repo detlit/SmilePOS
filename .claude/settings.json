@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(& \"d:\\\\project\\\\Smile\\\\Offline\\\\OfflineV3 27.3.26\\\\installer\\\\build-installer.ps1\" 2>&1)",
+      "Read(//c/SmilePharmacy/scripts/**)",
+      "Read(//c/SmilePharmacy/logs/**)",
+      "Read(//c/SmilePharmacy/**)",
+      "PowerShell(Copy-Item \"C:\\\\SmilePharmacy\\\\scripts\\\\03-pull-images.ps1\" \"d:\\\\project\\\\Smile\\\\Offline\\\\OfflineV3 27.3.26\\\\installer\\\\scripts\\\\03-pull-images.ps1\" -Force)",
+      "PowerShell(Copy-Item \"d:\\\\project\\\\Smile\\\\Offline\\\\OfflineV3 27.3.26\\\\installer\\\\scripts\\\\00-check-prerequisites.ps1\" \"C:\\\\SmilePharmacy\\\\scripts\\\\00-check-prerequisites.ps1\" -Force)",
+      "PowerShell(Set-Location \"d:\\\\project\\\\Smile\\\\Offline\\\\OfflineV3 27.3.26\\\\installer\"; powershell.exe -NoProfile -ExecutionPolicy Bypass -File \".\\\\build-installer.ps1\")"
+    ],
+    "additionalDirectories": [
+      "C:\\SmilePharmacy\\scripts"
+    ]
+  }
+}

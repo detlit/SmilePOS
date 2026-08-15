@@ -1,0 +1,124 @@
+####################################################################
+# Smile Pharmacy POS — .gitignore
+#
+# ⚠️ ส่วน "ข้อมูลลับ / ข้อมูลลูกค้า" ห้ามลบออกเด็ดขาด
+#    repo นี้เป็นซอฟต์แวร์ร้านขายยา — ไฟล์ฐานข้อมูลและ backup
+#    มีข้อมูลส่วนบุคคลของลูกค้า/คนไข้อยู่จริง
+####################################################################
+
+# ───────────────────────────────────────────────
+# 1. ข้อมูลลับ (secrets)
+# ───────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+.credentials
+auth.json
+
+# ───────────────────────────────────────────────
+# 2. ข้อมูลลูกค้า / ฐานข้อมูล — ห้ามขึ้น GitHub
+# ───────────────────────────────────────────────
+pg-data/
+pg-data.*/
+data/
+uploads/
+backups/
+*.backup
+*.dump
+*.sqlite
+*.sqlite3
+*.mdb
+auto_backup_*.json
+
+# ───────────────────────────────────────────────
+# 3. Dependencies
+# ───────────────────────────────────────────────
+node_modules/
+.pnp
+.pnp.js
+.yarn/
+
+# ───────────────────────────────────────────────
+# 4. Build output / artifacts
+# ───────────────────────────────────────────────
+.next/
+out/
+build/
+dist/
+dist_electron/
+installer/
+prisma/src/generated/
+*.tsbuildinfo
+next-env.d.ts
+
+# ───────────────────────────────────────────────
+# 5. ไฟล์ไบนารี / installer (build ใหม่ได้)
+# ───────────────────────────────────────────────
+*.exe
+*.msi
+*.dll
+*.node
+*.appx
+smartcard-agent/node_modules/
+
+# ───────────────────────────────────────────────
+# 6. Log / temp / scratch
+# ───────────────────────────────────────────────
+*.log
+!/.gitignore
+scratch/
+scratch_*.js
+scratch_*.log
+tsc_output.txt
+temp_*.pdf
+temp_*.png
+*.tmp
+.cache/
+
+# ไฟล์ที่เกิดจากพิมพ์ `> NUL` (cmd syntax) ใน bash/PowerShell — ได้ไฟล์จริงมาแทน
+# ชื่อพวกนี้เป็น device สงวนของ Windows  git add จะพังทั้งรอบถ้าเจอ
+NUL
+CON
+PRN
+AUX
+COM[1-9]
+LPT[1-9]
+
+# ───────────────────────────────────────────────
+# 7. Local tooling / editor
+# ───────────────────────────────────────────────
+.claude/settings.local.json
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ───────────────────────────────────────────────
+# 8. Test / coverage
+# ───────────────────────────────────────────────
+coverage/
+.nyc_output/
+
+# ───────────────────────────────────────────────
+# 9. Android (Capacitor)
+# ───────────────────────────────────────────────
+# ตัว android/ commit เข้า repo (มี .gitignore ของตัวเองคุมไฟล์ build อยู่แล้ว)
+# ส่วนนี้กันไฟล์ที่ห้ามหลุดและผลลัพธ์ build ที่ระดับ root
+dist_android/
+*.keystore
+*.jks
+keystore.properties
+android/local.properties
+android/app/google-services.json
+
+# --- Android standalone build ---
+# ตารางเส้นทาง API สร้างใหม่ทุกครั้งที่ build
+src/lib/mobile/api/registry.generated.ts
+
+# ไบนารี cloudflared (~40 MB ต่อ ABI) ดึงใหม่ด้วย npm run fetch:cloudflared
+# ไม่เก็บลง git เพราะประวัติจะบวมถาวรทุกครั้งที่อัปเดตเวอร์ชัน
+android/app/src/main/jniLibs/

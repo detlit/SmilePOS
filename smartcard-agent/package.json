@@ -1,0 +1,17 @@
+﻿{
+  "name": "thai-smartcard-agent",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local HTTP bridge for Thai National ID Smart Card readers (Zoweetek/PC-SC). Used by the POS web app via http://127.0.0.1:8182",
+  "main": "agent.js",
+  "scripts": {
+    "start": "node agent.js",
+    "mock": "node mock-agent.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "iconv-lite": "^0.6.3",
+    "koffi": "^2.10.0"
+  }
+}

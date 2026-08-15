@@ -1,0 +1,84 @@
+version: "3.8"
+
+services:
+  # ===========================================
+  # Database Service (PostgreSQL)
+  # ===========================================
+  postgres:
+    image: postgres:15-alpine
+    container_name: pos-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydb
+      TZ: Asia/Bangkok
+    ports:
+      # เปลี่ยนเป็น 5433 เพื่อหลีกเลี่ยง conflict กับ PostgreSQL ที่มีอยู่
+      - "5433:5432"
+    volumes:
+      # Persistent data storage - ข้อมูลจะเก็บไว้ที่ ./pg-data
+      - ./pg-data:/var/lib/postgresql/data
+    networks:
+      - pos-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U myuser -d mydb" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ===========================================
+  # Web Application (Next.js)
+  # ===========================================
+  app:
+    image: d2poption/smilestore:v1
+    container_name: pos-app
+    restart: always
+    ports:
+      # เปิด Port 4000 ให้เครื่องอื่นใน LAN เข้าถึงได้
+      - "4000:3000"
+    environment:
+      # เชื่อมต่อกับ Database ผ่าน container name
+      HOSTNAME: "0.0.0.0"
+      DATABASE_URL: postgresql://myuser:mypassword@postgres:5432/mydb?schema=public
+      NEXT_PUBLIC_API_URL: ""
+      TZ: Asia/Bangkok
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - pos-network
+    volumes:
+      - ./public:/app/public
+    extra_hosts:
+      # ให้ container เข้าถึง Smart Card Agent ที่รันบน Windows host ได้
+      # host.containers.internal = Podman (มีให้อัตโนมัติ), host.docker.internal = Docker บน Linux
+      - "host.docker.internal:host-gateway"
+
+  # ===========================================
+  # Cloudflare Tunnel (External Access)
+  # ===========================================
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: pos-cloudflared
+    restart: always
+    command: tunnel run
+    environment:
+      # รับ Token ผ่าน Environment Variable
+      - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+    depends_on:
+      - app
+    networks:
+      - pos-network
+
+# ===========================================
+# Network Configuration
+# ===========================================
+networks:
+  pos-network:
+    driver: bridge
+    # ให้ทุก Container คุยกันได้ผ่าน network นี้
+
+# docker exec -it pos-app npx prisma db push   ลง  database
+
+# docker rmi <image_id>  ลบ Image

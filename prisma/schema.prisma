@@ -1,0 +1,1718 @@
+// prisma/schema.prisma
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl"]
+}
+
+datasource db {
+  provider = "postgresql"
+ url      = env("DATABASE_URL") // หรือ leave blank หากใช้ prisma.config.ts
+}
+
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String?
+  company   String? 
+  tel       String? 
+  lineid    String? 
+  email     String?  @unique
+  password  String?
+  package   String?  @default("Free")
+  status    String?  @default("Active")
+  numdate   Int?     @default(30)
+  enddate   DateTime?
+  createdAt DateTime @default(now())
+  tunnelUrl              String?    // Cloudflare Tunnel URL ของสาขานี้
+  apiToken               String?    // Secret Key สำหรับยืนยันตัวตน API
+  pairingCode            String?    // รหัสจับคู่ 6 ตัว (หมดอายุ)
+  pairingCodeExpiresAt   DateTime?  // เวลาหมดอายุรหัสจับคู่
+  employees  SettingEmployee[]
+  connectionsFrom BranchConnection[] @relation("ConnectionsFrom")
+  connectionsTo   BranchConnection[] @relation("ConnectionsTo")
+}
+
+model SettingEmployee {
+  id          Int     @id @default(autoincrement())
+  company     String?   
+  name        String?  
+  position    String?
+  level       String?
+  username      String?  @unique
+  password      String?
+  passwords      String?
+  mobile        Boolean  @default(false)
+  timeIn        String?
+  timeOut       String?
+  salary        Float?    @default(0)
+  otRate        Float?    @default(0)
+  id_company      Int
+  users        User  @relation(fields: [id_company], references: [id])
+  checkinFace  CheckinFace?
+  permissions  EmployeePermission[]
+}
+
+model CheckinFace {
+  id             Int      @id @default(autoincrement())
+  employeeId     Int      @unique
+  faceDescriptor String   @default("")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  employee       SettingEmployee @relation(fields: [employeeId], references: [id])
+}
+
+model Getagory {
+  id      Int     @id @default(autoincrement())
+  list    String?
+  company String?
+}
+
+model Group {
+  id      Int     @id @default(autoincrement())
+  list    String?
+  company String?
+}
+
+model Fixname {
+  id        Int     @id @default(autoincrement())
+  shortlist String?
+  list      String?
+  company   String?
+}
+
+model Type {
+  id        Int     @id @default(autoincrement())
+  shortlist String?
+  list      String?
+  company   String?
+}
+
+model Unit {
+  id      Int     @id @default(autoincrement())
+  list    String?
+  company String?
+}
+
+model Area {
+  id      Int     @id @default(autoincrement())
+  list    String?
+  company String?
+}
+
+model Datalist {
+  id             Int     @id @default(autoincrement())
+  company        String?
+  code           String?
+  ProductName    String?
+  fixname        String?
+  group          String?
+  type           String?
+  subtype        String?
+  Category       String?
+  DrugRegistor   String?
+  Area           String?
+  Unit           String?
+  Barcode        String?
+  AlarmExp       String?
+  Remark         String?
+  Show           String?
+  Child          String?
+  CI             String?
+  CostActual     Float?
+  price          Float?
+  wholesaleprice Float?
+  online         Float?
+  PriceA         Float?
+  PriceB         Float?
+  PriceC         Float?
+  PriceD         Float?
+  PriceE         Float?
+  PriceF         Float?
+  PriceG         Float?
+  PriceH         Float?
+  Max            Float?
+  Min            Float?
+  ROP            Float?
+  pic            String?
+  maker          String?   @default("")
+  qty_unit       String?   @default("")
+  concentration  Float?
+  dosePerKg      Float?
+  doseFrequency  Int?
+  maxDosePerDay  Float?
+  memberDiscountEligible Boolean @default(true)
+  /// สินค้า lot — true (ค่าเริ่มต้น) = ต้องระบุ Lot/วันหมดอายุ ทุกธุรกรรม
+  /// (รับสินค้า · ขายสินค้า · โอน · รับโอน · ปรับยอด)
+  /// false = สินค้าไม่ติดตาม lot → ทุกธุรกรรมไม่ต้องกรอก/เลือก Lot
+  ///
+  /// หมายเหตุสำคัญ: ถึงแม้ requireLot = false ระบบยังคงบันทึกแถว RCitemlist ต่อการรับ
+  /// หนึ่งครั้งเหมือนเดิม (เป็น "บัญชีสต็อก" กลางที่ทุกสูตรคงเหลือใช้ — ดู src/lib/stockBalance.ts)
+  /// เพียงแต่ช่อง lot/dateExp จะว่าง และ UI จะไม่บังคับให้กรอก/เลือก
+  requireLot     Boolean @default(true)
+  drugSetItems   DrugSetItem[]
+
+  @@index([company, Barcode])
+  @@index([company, code])
+}
+
+/// บาร์โค้ดสำรอง (alias) ของสินค้า — หนึ่งสินค้า/หนึ่งหน่วยขาย มีได้หลายบาร์โค้ด
+///
+/// ตารางนี้เป็น "ดัชนีสำหรับค้นหา/สแกน" เท่านั้น ไม่ใช่ข้อมูลธุรกรรม:
+///   * ทุกเส้นทางสแกนจะ resolve alias -> ตัวสินค้า แล้วใช้ Datalist.Barcode
+///     (บาร์โค้ดหลัก) เขียนลงเอกสารเหมือนเดิมทุกประการ
+///   * ห้ามเขียนค่าจากตารางนี้ลง RCitemlist.Barcode / Sale.barcode /
+///     StockTransferItem.barcode / StockTransaction เด็ดขาด
+/// ผลคือยอด คงเหลือ/รับ/ขาย/โอน/รับโอน/ปรับยอด ยังคำนวณจากคีย์เดิม 100%
+/// (ดู src/lib/stockBalance.ts ที่ group ด้วย Datalist.Barcode)
+model ProductBarcode {
+  id          Int      @id @default(autoincrement())
+  company     String?
+  productCode String
+  productId   Int?
+  barcode     String
+  note        String?  @default("")
+  isActive    Boolean  @default(true)
+  createdBy   String?  @default("")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  @@unique([company, barcode])
+  @@index([company, productCode])
+  @@index([company, isActive])
+}
+
+model DrugSet {
+  id          Int           @id @default(autoincrement())
+  company     String?
+  name        String
+  description String?       @default("")
+  status      String?       @default("active")
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  items       DrugSetItem[]
+
+  @@index([company, name])
+  @@index([company, status])
+}
+
+model DrugSetItem {
+  id        Int      @id @default(autoincrement())
+  drugSetId Int
+  productId Int?
+  code      String?  @default("")
+  name      String?  @default("")
+  fixname   String?  @default("")
+  drugGroup String?  @default("")
+  barcode   String?  @default("")
+  unit      String?  @default("")
+  qty       Float    @default(1)
+  salePrice Float?   @default(0)
+  cost      Float?   @default(0)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  // หน่วยแปลง (UnitConversion) ที่เลือกให้รายการนี้ — null = ใช้หน่วยฐานของสินค้า
+  unitConversionId Int?
+  saleUnit         String? @default("")
+  subQty           Float?  @default(1)
+  // ราคาขายเฉพาะชุดนี้ — null = ใช้ราคาปกติตามระดับราคาที่ขายอยู่
+  priceOverride    Float?
+  drugSet   DrugSet  @relation(fields: [drugSetId], references: [id], onDelete: Cascade)
+  product   Datalist? @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  @@index([drugSetId])
+  @@index([productId])
+  @@index([code])
+}
+
+model Customer {
+  id                Int     @id @default(autoincrement())
+  company           String?
+  code              String?
+  sex               String?
+  idcode            String?
+  age               Int?
+  address           String?
+  branch            String?
+  levelPrice        String?
+  tel               String?
+  pointStart        Int?
+  point             Int?
+  totalPoint        Int?
+  customer          String?
+  congenitalDisease String?
+  names             String?
+  statuss           String?
+  birthday          String?
+  numbertax         String?   @default("")
+  moreInfo          String?   @default("")
+  drugallergys      Drugallergy[]
+}
+
+model Drugallergy {
+  id                Int     @id @default(autoincrement())
+  company           String?
+  drugallergy       String?
+  remark            String?
+  id_cus            Int
+  salemain          Customer  @relation(fields: [id_cus], references: [id])
+
+}
+
+model Supplier {
+  id       Int     @id @default(autoincrement())
+  company  String?
+  code     String?
+  names    String?
+  tel      String?
+  idcode   String?
+  address  String?
+  statuss  String?
+  leadtime Int?
+  email    String?
+}
+
+model Receive {
+  id           Int       @id @default(autoincrement())
+  company      String?
+  code         String?
+  orderNo      String?     @default("")
+  orderfull    String?     @default("")
+  names        String?
+  invoice_No   String?
+  statuss      String?
+  order_date   DateTime?
+  receive_date DateTime?
+  tax_date     DateTime?
+  tax_no       String?     @default("")
+  pay_date     DateTime?
+  codenames    String?
+  persons       String? @default("")
+  totalRC      Float?  @default(0)
+  vatRC        Float?  @default(0)
+  discountRC   Float?  @default(0)
+  totalRCAll   Float?  @default(0)
+  countorder   Float?  @default(0)
+  purchase_debit_date             DateTime?
+  purchase_debit_number           Int?
+  purchase_debit_orderNo          String?
+  purchase_debit_orderfull        String?
+  purchase_debit_status           String?
+  purchase_debit_person           String?
+  purchase_debit_remark           String?
+  purchase_debit_reference_no     String?
+  purchase_debit_reference_book_no String?
+  purchase_debit_reason           String?
+  purchase_debit_original_amount  Float?
+  purchase_debit_correct_amount   Float?
+  purchase_debit_difference_amount Float?
+  purchase_debit_vat_rate         Int?
+  purchase_debit_vat_amount       Float?
+  purchase_debit_grand_total      Float?
+  purchase_credit_date            DateTime?
+  purchase_credit_number          Int?
+  purchase_credit_orderNo         String?
+  purchase_credit_orderfull       String?
+  purchase_credit_status          String?
+  purchase_credit_person          String?
+  purchase_credit_remark          String?
+  purchase_credit_reference_no    String?
+  purchase_credit_reference_book_no String?
+  purchase_credit_reason          String?
+  purchase_credit_item_name       String?
+  purchase_credit_item_qty        Float?
+  purchase_credit_items_json      Json?
+  purchase_credit_original_amount Float?
+  purchase_credit_correct_amount  Float?
+  purchase_credit_difference_amount Float?
+  purchase_credit_reduce_amount   Float?
+  purchase_credit_vat_rate        Int?
+  purchase_credit_vat_amount      Float?
+  purchase_credit_net_total       Float?
+  confirmRecord ConfirmRC?
+}
+
+model ConfirmRC {
+  id          Int       @id @default(autoincrement())
+  company     String?
+  receiveId   Int       @unique
+  status      String?   @default("confirmed")
+  confirmedAt DateTime? @default(now())
+  confirmedBy String?   @default("")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  receive     Receive   @relation(fields: [receiveId], references: [id], onDelete: Cascade)
+
+  @@index([company, status])
+}
+
+model RCitemlist {
+  id           Int       @id @default(autoincrement())
+  company      String?
+  codenames    String?
+  itemcode     String?
+  itemName     String?
+  unit         String?
+  createDate   DateTime? @default(now())
+  newCost      Float?
+  /// ทุนสุทธิต่อหน่วยย่อย หลังหักส่วนลดต่อบรรทัด = (totalcost − discountbaht) ÷ qty
+  /// สูตรและเหตุผลทั้งหมดอยู่ที่ src/lib/lotCost.ts — ห้ามคำนวณเองที่อื่น
+  /// null = ยังไม่คำนวณ (ตัวอ่านคำนวณสดให้เอง) ไม่ได้แปลว่า "ไม่มีส่วนลด"
+  /// ⚠️ ต้องเป็น Float? เปล่า ๆ ห้ามใส่ @default/NOT NULL — db push ตอนลูกค้าอัปเดต
+  ///    จะมองเป็น drift แล้ว drop+recreate ทิ้งทุกครั้ง (เคยเกิดกับ MainLevel มาแล้ว)
+  netCost      Float?
+  qty          Float?
+  totalcost    Float?
+  lot          String?
+  dateExp      DateTime?
+  freebaht     Float?
+  discountbaht Float?
+  sale         Float?
+  Barcode      String?
+  type         String?   @default("")
+  subtype      String?   @default("")
+  person       String?
+  statuss      String?
+  dateRC       DateTime?
+  balance     Float?
+  codevender  String?   @default("")
+  namevender  String?   @default("")
+  maker       String?   @default("")
+  qty_unit    String?   @default("")
+
+  /// ══ หน่วยขาย (pack) ที่ใช้ "รับเข้า" จริง — ดู src/lib/receiveUnit.ts ══
+  /// รับเป็นลัง/กล่อง/แพ็ค (UnitConversion) ได้ โดยที่ qty/unit ยังเป็น "หน่วยย่อย"
+  /// (หน่วยฐานของสินค้า = Datalist.Unit) เสมอ:
+  ///     qty  = saleQty × saleFactor        unit = Datalist.Unit
+  /// สามฟิลด์นี้เป็นข้อมูล "ที่มาของจำนวน" ไว้แสดง/ตรวจสอบย้อนหลังเท่านั้น
+  /// ทุกสูตรคงเหลือ/ต้นทุนยังอ่าน qty · unit · newCost (ต่อหน่วยย่อย) เหมือนเดิม
+  /// จึงไม่กระทบยอดสต็อกเดิม และแถวเก่า (null) = รับด้วยหน่วยฐาน factor 1
+  ///
+  /// ⚠️ อย่าสับสนกับคอลัมน์ sale ด้านบน — sale คือ "ตัวนับจำนวนที่ขายไปแล้ว" ของ lot
+  /// จำนวนที่รับในหน่วยขาย เช่น 2 (กล่อง)
+  saleQty     Float?
+  /// ชื่อหน่วยขายที่รับเข้า เช่น "กล่อง" (ว่าง/null = รับด้วยหน่วยฐาน)
+  saleUnit    String?
+  /// จำนวนหน่วยย่อยต่อ 1 หน่วยขาย (UnitConversion.subQty) — หน่วยฐาน = 1
+  saleFactor  Float?
+
+  @@index([company, dateRC])
+  @@index([company, Barcode])
+  @@index([company, itemcode])
+}
+
+model SaleMain {
+  id            Int       @id @default(autoincrement())
+  createDate    DateTime? @default(now())
+  id_costomer   Int?
+  code_costomer String?
+  group_price   String?
+  pay           String?
+  bill          Int?
+  discount      Float?
+  memberDiscount Float? @default(0)
+  memberDiscountPercent Float? @default(0)
+  sumtotal      Float?
+  addreward     Float?
+  usereward     Float?
+  companyall    String?
+  personall     String?
+  statussall    String?
+  totalall      Float?
+  orderNo       String?
+  transferDetail String?
+  cashAmount    Float?
+  transferAmount Float?
+  serviceCharge Float?   @default(0) // ค่าธรรมเนียมบัตร (เช่น EDC) เรียกเก็บเพิ่มจากลูกค้า — แยกจาก sumtotal (sumtotal = ยอดสินค้า)
+  serviceChargePercent Float? @default(0)
+  discountReason String?  @default("")
+  taxInvoiceNo   String?  @default("")
+  vatAmount      Float?   @default(0)
+  beforeVat      Float?   @default(0)
+  sales         Sale[]
+  historys      History[]
+ 
+  @@index([companyall, statussall, createDate])
+}
+
+
+model Sale {
+  id           Int       @id @default(autoincrement())
+  createDate   DateTime? @default(now())
+  company      String?
+  id_product   Int?
+  code_product String?
+  name_product String?
+  cetagory     String?  @default("")
+  fixname      String?
+  unit         String?
+  qty          Float?
+  subunit      String? @default("")
+  subqty       Float?  @default(0)
+  cost         Float?  @default(0)
+  price        Float?
+  discount     Float?  @default(0)
+  memberDiscount Float? @default(0)
+  memberDiscountPercent Float? @default(0)
+  total        Float?
+  barcode      String? @default("")
+  id_receive1  Float?
+  lot_receive1 String?
+  qty_lot1     Float?
+  id_receive2  Float?
+  lot_receive2 String?
+  qty_lot2     Float?
+  id_receive3  Float?
+  lot_receive3 String?
+  qty_lot3     Float?
+  person       String?
+  statuss      String?
+  type         String?  @default("")
+  name_customer String?  @default("")
+  id_card      String?  @default("")
+  phone        String?  @default("")
+  pharmacy     String?  @default("")
+  gifts        Float?  @default(0)
+  id_salemain  Int
+  salemain     SaleMain  @relation(fields: [id_salemain], references: [id])
+
+  @@index([company, statuss, createDate])
+  @@index([company, barcode])
+}
+
+model History {
+  id            Int       @id @default(autoincrement())
+  createDate   DateTime?  @default(now())
+  company      String?
+  id_costomer   Int?
+  code_costomer String?
+  name_customer String?     @default("")
+  duedate       DateTime?
+  followup      String?
+  solution      String?
+  duedate1       DateTime?   
+  followup1      String?     @default("")
+  solution1      String?     @default("")
+  duedate2       DateTime?   
+  followup2      String?     @default("")
+  solution2      String?     @default("")
+  id_history    Int?         @default(0)
+  count         Int?
+  statusH       String?
+  person        String? 
+  remark        String?
+  id_salemain   Int  
+  salemain      SaleMain  @relation(fields: [id_salemain], references: [id])
+}
+
+
+
+model Gifts {
+  id            Int       @id @default(autoincrement())
+  createDate    DateTime? @default(now())
+  company      String?
+  id_product   Int?
+  code_product String?
+  name_product String?
+  gift         Float?
+  person       String? 
+
+}
+
+model Indicator {
+  id      Int     @id @default(autoincrement())
+  company String? 
+  list    String?
+  list_lo  String? @default("")
+  list_my  String? @default("")
+  list_km  String? @default("")
+  list_zh  String? @default("")
+  list_eng  String? @default("")
+}
+
+model Methodlist {
+  id      Int     @id @default(autoincrement())
+  company String?
+  list    String?
+  qty     String?
+  unit    String?
+  fullname    String?
+  list_lo  String? @default("")
+  list_my  String? @default("")
+  list_km  String? @default("")
+  list_zh  String? @default("")
+  list_eng  String? @default("")
+
+}
+
+model TimeL {
+  id      Int     @id @default(autoincrement())
+  company String?
+  list    String?
+  list_lo  String? @default("")
+  list_my  String? @default("")
+  list_km  String? @default("")
+  list_zh  String? @default("")
+  list_eng  String? @default("")
+}
+
+model UseL {
+  id      Int     @id @default(autoincrement())
+  company String?
+  list    String?
+  list_lo  String? @default("")
+  list_my  String? @default("")
+  list_km  String? @default("")
+  list_zh  String? @default("")
+  list_eng  String? @default("")
+}
+
+model TimeUseL {
+  id      Int     @id @default(autoincrement())
+  company String?
+  list    String?
+  list_lo  String? @default("")
+  list_my  String? @default("")
+  list_km  String? @default("")
+  list_zh  String? @default("")
+  list_eng  String? @default("")
+  
+}
+
+model KeepL {
+  id      Int     @id @default(autoincrement())
+  company String?
+  list    String?
+  list_lo  String? @default("")
+  list_my  String? @default("")
+  list_km  String? @default("")
+  list_zh  String? @default("")
+  list_eng  String? @default("")
+}
+
+model RemarkL {
+  id      Int     @id @default(autoincrement())
+  company String?
+  list    String?
+  list_lo  String? @default("")
+  list_my  String? @default("")
+  list_km  String? @default("")
+  list_zh  String? @default("")
+  list_eng  String? @default("")
+}
+
+model Labeldata {
+  id      Int     @id @default(autoincrement())
+  company         String?
+  code            String?
+  indicatorlistS  String?  @default("")
+  timeS           String?  @default("")
+  useS            String?  @default("")
+  timeuseS        String?  @default("")  
+  keepS           String?  @default("")
+  remarkS         String?  @default("")
+
+}
+
+model GenericLabel {
+  id              Int     @id @default(autoincrement())
+  company         String?
+  fixname         String?
+  shortname       String?  @default("")
+  indicatorlistS  String?  @default("")
+  timeS           String?  @default("")
+  useS            String?  @default("")
+  timeuseS        String?  @default("")
+  keepS           String?  @default("")
+  remarkS         String?  @default("")
+
+  @@index([company, fixname])
+}
+
+model LabelHelper {
+  id          Int      @id @default(autoincrement())
+  company     String?
+  name        String?  @default("")
+  isDefault   Boolean  @default(false)
+  suspended   Boolean  @default(false)
+  paperSize   String?  @default("80x50")
+  labelStyle  String?  @default("current")
+  title       String?  @default("")
+  titleOn     Boolean  @default(true)
+  titleSize   Int      @default(14)
+  line1       String?  @default("")
+  line1On     Boolean  @default(true)
+  line1Size   Int      @default(10)
+  line2       String?  @default("")
+  line2On     Boolean  @default(true)
+  line2Size   Int      @default(10)
+  line3       String?  @default("")
+  line3On     Boolean  @default(true)
+  line3Size   Int      @default(10)
+  line4       String?  @default("")
+  line4On     Boolean  @default(true)
+  line4Size   Int      @default(10)
+  line5       String?  @default("")
+  line5On     Boolean  @default(true)
+  line5Size   Int      @default(10)
+  line6       String?  @default("")
+  line6On     Boolean  @default(true)
+  line6Size   Int      @default(10)
+  url         String?  @default("")
+  showBarcode Boolean  @default(false)
+  barcode     String?  @default("")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([company])
+}
+
+model SettingStore {
+  id      Int     @id @default(autoincrement())
+  company String?   
+  namestore String? @unique
+  address String?
+  tel     String?
+  lineid  String?
+  ownerName String? @default("")
+  taxnumber  String?
+  publiclogo String? @unique
+  publicline String? @unique
+  vatEnabled String? @default("false")
+  vatRate    Float?  @default(7)
+  branchName String? @default("")
+  branchCode String? @default("")
+  blockNegativeStockSale String? @default("false")
+  expiryColorRules String? @default("[]")
+  costPriceMode String? @default("latest")
+}
+
+
+
+model SettingLabel {
+  id      Int     @id @default(autoincrement())
+  company String?   
+  logo    String?
+  line    String?
+  all    String?
+
+}
+
+model Settingpoint {
+  id      Int     @id @default(autoincrement())
+  company String?   
+  sale    Int?
+  pointeq    Int?
+  pointset    Int?
+  discount    Int?
+  status      String?
+  memberDiscountPercent Float @default(2)
+  memberDiscountEnabled Boolean @default(false)
+
+}
+
+model Settingpayment {
+  id      Int     @id @default(autoincrement())
+  company String?   
+  bank   String?
+  name   String?
+  bookbankno   String?
+  promtpayno   String?
+  publicId String? @unique
+
+}
+
+model ReportWorkShift {
+  id        Int      @id @default(autoincrement())
+  company   String
+  shiftKey  String
+  name      String
+  startTime String
+  endTime   String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([company, shiftKey])
+  @@index([company, sortOrder])
+}
+
+model PaymentProvider {
+  id          Int      @id @default(autoincrement())
+  company     String?
+  provider    String   // "promptpay","maemanee","kshop","alipay","wechat","truemoney","edc"
+  enabled     Boolean  @default(false)
+  displayName String?
+  apiKey      String?
+  secretKey   String?
+  merchantId  String?
+  accountId   String?
+  qrImageUrl  String?
+  webhookUrl  String?
+  serviceChargePercent Float? // % ค่าธรรมเนียมเรียกเก็บเพิ่มจากลูกค้า (เช่น EDC บัตรเครดิต)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model PaymentTransaction {
+  id          Int       @id @default(autoincrement())
+  txId        String    @unique @default(uuid())
+  company     String?
+  provider    String?
+  amount      Float?
+  status      String?   @default("pending") // "pending","success","failed"
+  reference   String?
+  saleId      String?
+  qrPayload   String?   // QR data for dynamic QR
+  rawPayload  String?   // JSON from webhook callback
+  paidAt      DateTime?
+  expiresAt   DateTime?
+  createdAt   DateTime  @default(now())
+}
+
+model Promotion {
+  id              Int     @id @default(autoincrement())
+  company         String?   
+  name_promotion  String?
+  customer        String?
+  conditionid     Int?
+  condition       String?
+  startdate       DateTime?
+  enddate         DateTime?
+  unit            String?
+  pay_condition   Int?
+  discount        Int?
+  msg_condition   String?
+  msg_discount    String?
+  status          String?
+  person          String? 
+}
+
+// โปรโมชั่นระดับสินค้า (ผูกกับสินค้า + ระดับราคา)
+// promo_type: "discount" = ซื้อครบ/มากกว่า N หน่วย ลดราคา (บาท/%)
+//             "freebie"  = ซื้อครบ N หน่วย แถม M หน่วย
+model ProductPromotion {
+  id             Int       @id @default(autoincrement())
+  company        String?
+  name           String?
+  id_product     Int?
+  code_product   String?
+  name_product   String?
+  unit           String?
+  price_tier     String?   @default("ทุกระดับราคา")
+  promo_type     String?   @default("discount")
+  min_qty        Float?    @default(0)
+  discount_unit  String?   @default("baht") // "baht" | "percent"
+  discount_scope String?   @default("unit") // "unit" = ลดต่อหน่วย | "bill" = ลดทั้งรายการ
+  discount_value Float?    @default(0)
+  free_qty       Float?    @default(0)
+  startdate      DateTime?
+  enddate        DateTime?
+  status         String?   @default("active") // "active" | "inactive"
+  person         String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([company, status])
+  @@index([company, code_product])
+}
+
+model Label_language {
+  id              Int     @id @default(autoincrement()) 
+  list    String?
+  list_lo  String? @default("")
+  list_my  String? @default("")
+  list_km  String? @default("")
+  list_zh  String? @default("")
+  list_eng  String? @default("")
+}
+
+
+model DocMain {
+  id            Int       @id @default(autoincrement())
+  createDate    DateTime? @default(now())
+  id_costomer   Int?
+  code_costomer String?
+  name_costomer String?
+  group_price   String?
+  pay           String?
+  bill          Int?
+  discount      Float?
+  sumtotal      Float?
+  addreward     Float?
+  usereward     Float?
+  companyall    String?
+  personall     String?
+  statussall    String?
+  totalall      Float?
+  taxnumber     String?
+
+  qt_date       DateTime?
+  qt_enddate    DateTime? 
+  qt_credit     Int?
+  qt_number     Int?
+  qt_orderNo    String?
+  qt_orderfull  String?  
+  qt_status     String? 
+  qt_person     String?
+  qt_remark     String?
+
+  bl_date       DateTime?
+  bl_enddate    DateTime? 
+  bl_number     Int?
+  bl_orderNo    String?
+  bl_orderfull  String?   
+  bl_status     String?  
+  bl_credit     Int?
+  bl_person     String?
+  bl_remark     String?
+  
+  inv_date       DateTime?
+  inv_enddate    DateTime?
+  inv_number     Int?
+  inv_orderNo    String?
+  inv_orderfull  String?   
+  inv_status     String?  
+  inv_credit     Int?
+  inv_person     String?
+  inv_remark     String?
+
+  re_date       DateTime?
+  re_enddate    DateTime?
+  re_number     Int?
+  re_orderNo    String?
+  re_orderfull  String?
+  re_status     String?
+  re_credit     Int?
+  re_person     String?
+  re_remark     String?
+
+  dn_date       DateTime?
+  dn_enddate    DateTime?
+  dn_number     Int?
+  dn_orderNo    String?
+  dn_orderfull  String?
+  dn_status     String?
+  dn_credit     Int?
+  dn_person     String?
+  dn_remark     String?
+  dn_paytype    String?
+  dn_deposit    Float?
+  dn_balance    Float?
+
+  tax_date       DateTime?
+  tax_enddate    DateTime? 
+  tax_number     Int?
+  tax_orderNo    String?
+  tax_orderfull  String?   
+  tax_status     String?   
+  tax_credit     Int?
+  tax_person     String?
+  tax_remark     String?
+
+  debit_date             DateTime?
+  debit_enddate          DateTime?
+  debit_number           Int?
+  debit_orderNo          String?
+  debit_orderfull        String?
+  debit_status           String?
+  debit_credit           Int?
+  debit_person           String?
+  debit_remark           String?
+  debit_reference_no     String?
+  debit_reason           String?
+  debit_original_amount  Float?
+  debit_correct_amount   Float?
+  debit_difference_amount Float?
+  debit_vat_rate         Int?
+  debit_vat_amount       Float?
+  debit_grand_total      Float?
+
+  credit_date            DateTime?
+  credit_enddate         DateTime?
+  credit_number          Int?
+  credit_orderNo         String?
+  credit_orderfull       String?
+  credit_status          String?
+  credit_credit          Int?
+  credit_person          String?
+  credit_remark          String?
+  credit_reference_no    String?
+  credit_reference_book_no String?
+  credit_reason          String?
+  credit_item_name       String?
+  credit_item_qty        Float?
+  credit_items_json      Json?
+  credit_original_amount Float?
+  credit_correct_amount  Float?
+  credit_difference_amount Float?
+  credit_reduce_amount   Float?
+  credit_vat_rate        Int?
+  credit_vat_amount      Float?
+  credit_net_total       Float?
+
+  
+
+  detailsale    DocDetail[]
+}
+
+model DocDetail {
+  id           Int       @id @default(autoincrement())
+  createDate   DateTime? @default(now())
+  company      String?
+  id_product   Int?
+  code_product String?
+  name_product String?
+  cetagory     String?  @default("")
+  unit         String?
+  qty          Float?
+  cost         Float?  @default(0)
+  price        Float?
+  discount     Float?  @default(0)
+  total        Float?
+  person       String?
+  statuss      String?
+  id_docmain  Int
+  docmain     DocMain  @relation(fields: [id_docmain], references: [id])
+}
+
+model PL {
+  id             Int       @id @default(autoincrement())
+  company       String?
+  month         String?
+  year          String?
+  monthyear     String?
+  R4000          Float?
+  R4001          Float?
+  R4002          Float?
+
+  C5000          Float?
+  C5001          Float?
+
+  S6000          Float?
+  S6001          Float?
+  S6002          Float?
+  S6003          Float?
+  S6004          Float?
+  S6005          Float?
+  S6006          Float?
+  S6007          Float?
+  S6008          Float?
+  S6009          Float?
+  S6010          Float?
+
+  A7000          Float?
+  A7001          Float?
+  A7002          Float?
+  A7003          Float?
+  A7004          Float?
+  A7005          Float?
+  A7006          Float?
+  A7007          Float?
+
+  vat           Float?
+}
+
+model Interaction {
+  id             Int       @id @default(autoincrement())
+  company       String?
+  fixname1      String?
+  fixname2      String?
+  status        String?
+
+}
+
+model Level {
+  id        Int       @id @default(autoincrement())
+  mainlevel MainLevel[]
+}
+
+model MainLevel {
+  id             Int       @id @default(autoincrement())
+  company       String?
+  codename      String?   @default("")
+  main          String?   @default("")
+  list          String?   @default("") 
+  level1        Boolean?    @default(true)   
+  level2        Boolean?    @default(true)
+  level3        Boolean?    @default(true)
+  levelId  Int
+  level    Level  @relation(fields: [levelId], references: [id])
+
+}
+
+model EmployeePermission {
+  id          Int              @id @default(autoincrement())
+  employeeId  Int
+  codename    String
+  allowed     Boolean          @default(true)
+  employee    SettingEmployee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@unique([employeeId, codename])
+}
+
+model Checkin {
+  id             Int       @id @default(autoincrement())
+  idcompany     String?    @default("")
+  company       String?    @default("")
+  personId      Int?       @default(0)
+  person        String?    @default("")
+  status        String?    @default("")
+  checkin        DateTime?   
+  checkout       DateTime? 
+  checkinLat     Float?     @default(0)
+  checkinLng     Float?     @default(0)
+  checkoutLat    Float?     @default(0)
+  checkoutLng    Float?     @default(0)
+  gpsRadius      Float?     @default(10)  
+  targetLat      Float?     @default(0)
+  targetLng      Float?     @default(0)
+  approve        String?    @default("")
+  approveDate    DateTime?   
+  approvePerson  String?    @default("")
+  remark         String?    @default("")
+
+}
+
+model CheckinSet {
+  id             Int       @id @default(autoincrement())
+  idcompany     String?    @default("")
+  names         String?    @default("")
+  radius        Float?     @default(100)
+  latitude      Float?     @default(0)
+  longitude     Float?     @default(0)
+  createdAt     DateTime?  @default(now())
+}
+
+// คอมพิวเตอร์ที่ได้รับอนุญาตให้ลงเวลา Check-in / Check-out
+model CheckinDevice {
+  id            Int       @id @default(autoincrement())
+  idcompany     String?   @default("")
+  deviceId      String    @unique
+  name          String?   @default("")
+  branch        String?   @default("")
+  deviceType    String?   @default("Web")
+  status        String?   @default("active") // active | disabled
+  registeredBy  String?   @default("")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([idcompany])
+}
+
+model Checkstock {
+  id           Int       @id @default(autoincrement())
+  date         DateTime? @default(now())
+  month        String?   @default("")
+  idcompany    String?   @default("")
+  id_product   Int?
+  name_product String?   @default("")
+  balance      Float?    @default(0)
+  actual       Float?    @default(0)
+  diff         Float?    @default(0)
+  person       String?   @default("")
+  status       String?   @default("")
+}
+
+model RCstockchange {
+  id           Int       @id @default(autoincrement())
+  company      String?
+  codenames    String?
+  itemcode     String?
+  itemName     String?
+  unit         String?
+  createDate   DateTime? @default(now())
+  newCost      Float?
+  qty          Float?
+  totalcost    Float?
+  lot          String?
+  dateExp      DateTime?
+  freebaht     Float?
+  discountbaht Float?
+  sale         Float?
+  Barcode      String?
+  type         String?
+  person       String?
+  statuss      String?
+  dateRC       DateTime?
+  balance     Float?
+  codevender  String?   @default("")
+  namevender  String?   @default("")
+}
+
+model StockTransaction {
+  id                Int       @id @default(autoincrement())
+  product_id        Int?
+  inventory_lot_id  Int?
+  itemcode          String?   // รหัสสินค้า
+  itemName          String?   // ชื่อสินค้า
+  lot               String?   // เลข Lot
+  dateExp           DateTime? // วันหมดอายุ
+  quantity_change   Float?
+  balance_after     Float?    // ยอดคงเหลือหลังตัด
+  transaction_type  String?   // SALE, IN, ADJUST, TRANSFER_OUT, TRANSFER_IN
+  createDate        DateTime? @default(now())
+  company           String?
+  person            String?
+  personsale      String    @default("")
+  receiverCompany   String?   // ID สาขาผู้รับ (สำหรับ TRANSFER_OUT)
+  adjustReasonMain String?   // เหตุผลหลักในการปรับยอด
+  receiverCompanyName String? // ชื่อสาขาผู้รับ (สำหรับ TRANSFER_OUT)
+}
+
+model OrderMain {
+  id            Int       @id @default(autoincrement())
+  createDate    DateTime? @default(now())
+  company       String?
+  orderNo      String?     @default("")
+  orderfull    String?     @default("")
+  supplierId    Int?
+  supplierCode  String?
+  supplierName  String?
+  totalAmount   Float?    @default(0)
+  status        String?   @default("Pending")
+  person        String?
+  remark        String?
+  items         OrderDetail[]
+}
+
+model OrderDetail {
+  id           Int       @id @default(autoincrement())
+  orderId      Int
+  itemcode     String?
+  itemName     String?
+  qty          Float?
+  unit         String?   @default("")
+  cost         Float?    @default(0)
+  total        Float?    @default(0)
+  status        String?   @default("Pending")
+  orderMain    OrderMain @relation(fields: [orderId], references: [id])
+}
+
+model IncentiveSetting {
+  id                    Int       @id @default(autoincrement())
+  company               String?
+  targetMonthly         Float?    @default(300000)
+  targetMonthlyBonus    Float?    @default(1000)
+  targetDaysOver        Float?    @default(13)
+  targetDaysOverBonus   Float?    @default(750)
+  targetAmountOver      Float?    @default(10000)
+  targetAmountOverBonus Float?    @default(0)
+  targetDaily           Float?    @default(12000)
+  targetDailyBonus      Float?    @default(80)
+  pickupFeeRate         Float?    @default(0.5)
+  pickupFeeBonus        Float?    @default(0)
+  salesPerBillTarget    Float?    @default(120)
+  salesPerBillBonus     Float?    @default(20)
+  enableTargetMonthly   Boolean   @default(true)
+  enableTargetDaysOver  Boolean   @default(true)
+  enableTargetDaily     Boolean   @default(true)
+  enablePickupFee       Boolean   @default(true)
+  enableSalesPerBill    Boolean   @default(true)
+  createdAt             DateTime? @default(now())
+  updatedAt             DateTime? @updatedAt
+}
+
+model BranchConnection {
+  id              Int       @id @default(autoincrement())
+  fromUserId      Int       // ID ของ User สาขาที่เชื่อม
+  toUserId        Int?      // ID ของ User สาขาปลายทาง (nullable สำหรับ remote)
+  remoteUserId    Int?      // ID ของ User ที่ฝั่ง remote DB
+  remoteCompany   String?   // ชื่อร้าน/บริษัทของสาขาปลายทาง
+  status          String    @default("accepted") // accepted, disconnected
+  tunnelUrl       String?   // Cloudflare Tunnel URL ของสาขาปลายทาง
+  apiToken        String?   // Token ที่ใช้ยืนยันตัวตนในการเชื่อมต่อ
+  branchName      String?   // ชื่อสาขาปลายทาง (เก็บไว้แสดง)
+  lastCheckedAt   DateTime? // เวลาเช็คสถานะล่าสุด
+  isOnline        Boolean   @default(false) // สถานะออนไลน์
+  requestedAt     DateTime  @default(now())
+  respondedAt     DateTime?
+  fromUser        User      @relation("ConnectionsFrom", fields: [fromUserId], references: [id])
+  toUser          User?     @relation("ConnectionsTo", fields: [toUserId], references: [id])
+
+  @@unique([fromUserId, tunnelUrl])
+}
+
+model StockTransfer {
+  id              Int       @id @default(autoincrement())
+  transferNo      String?   // หมายเลขการโอน เช่น TRF-2026001
+  fromUserId      Int       // สาขาผู้ส่ง
+  toUserId        Int       // สาขาผู้รับ
+  transferMode    String    @default("connected") // connected, remote, manual
+  status          String    @default("pending") // pending, completed, cancelled
+  createdAt       DateTime  @default(now())
+  completedAt     DateTime?
+  person          String?   // ผู้ทำรายการ
+  remark          String?
+  fromBranchNameSnapshot String?
+  fromBranchEmailSnapshot String?
+  toBranchNameSnapshot String?
+  toBranchEmailSnapshot String?
+  toBranchDetailSnapshot String?
+  items           StockTransferItem[]
+}
+
+model StockTransferItem {
+  id              Int       @id @default(autoincrement())
+  transferId      Int
+  itemcode        String?
+  itemName        String?
+  lotId           Int?      // FK ไปยัง RCitemlist
+  lot             String?   // เลข lot
+  dateExp         DateTime?
+  qty             Float?    // จำนวนที่โอน
+  cost            Float?
+  confirmedQty    Float?    // จำนวนที่ผู้รับยืนยัน (null = ยังไม่ยืนยัน)
+  itemStatus      String    @default("pending") // pending, confirmed, returned
+  personsale      String    @default("")
+  barcode         String?
+  unit            String?
+  transfer        StockTransfer @relation(fields: [transferId], references: [id])
+}
+
+model UnitConversion {
+  id             Int     @id @default(autoincrement())
+  company        String?
+  productCode    String?
+  qty            Int?      @default(1)
+  saleUnit       String?
+  subQty         Float?    @default(12)
+  subUnit        String?
+  priceRetail    Float?
+  priceWholesale Float?
+  priceOnline    Float?
+  priceA         Float?
+  priceB         Float?
+  priceC         Float?
+  priceD         Float?
+  priceE         Float?
+  priceF         Float?
+  priceG         Float?
+  priceH         Float?
+  Barcode        String?   @default("")
+}
+
+model TemperatureRecord {
+  id             Int       @id @default(autoincrement())
+  company        String?
+  recordDate     DateTime?
+  recordPoint    Int?      // จุดที่บันทึก 1-10
+  recordTime     Int?      // ครั้งที่บันทึก 1-3
+  temperature    Float?    // อุณหภูมิ
+  humidity       Float?    // ความชื้น
+  locationType   String?   // "room" หรือ "fridge"
+  person         String?   // ผู้บันทึก
+  createdAt      DateTime  @default(now())
+}
+
+model TemperatureSetting {
+  id             Int       @id @default(autoincrement())
+  company        String?
+  roomTempMin    Float?    @default(0)
+  roomTempMax    Float?    @default(30)
+  roomHumidMin   Float?    @default(30)
+  roomHumidMax   Float?    @default(50)
+  fridgeTempMin  Float?    @default(2)
+  fridgeTempMax  Float?    @default(8)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model LeaveConfig {
+  id               Int       @id @default(autoincrement())
+  idcompany        String?   @default("")
+  vacationDays     Int?      @default(6)
+  personalDays     Int?      @default(3)
+  sickDays         Int?      @default(30)
+  lateLimit        Int?      @default(3)
+  workStartTime    String?   @default("08:30")
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+model LeaveRecord {
+  id               Int       @id @default(autoincrement())
+  idcompany        String?   @default("")
+  personId         Int?      @default(0)
+  person           String?   @default("")
+  leaveType        String?   @default("")
+  leaveDate        DateTime?
+  reason           String?   @default("")
+  status           String?   @default("pending")
+  rejectReason     String?   @default("")
+  approvedBy       String?   @default("")
+  approvedDate     DateTime?
+  createdAt        DateTime  @default(now())
+}
+
+model TemperaturePoint {
+  id             Int       @id @default(autoincrement())
+  company        String?
+  pointNumber    Int?      // หมายเลขจุด 1-10
+  pointName      String?   // ชื่อจุด เช่น "ชั้นวางยา 1"
+  detail         String?   // รายละเอียดจุดบันทึก
+  locationType   String?   // "room" หรือ "fridge"
+  isActive       Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model SyncLog {
+  id             Int       @id @default(autoincrement())
+  company        String?
+  targetBranch   String?   // tunnelUrl หรือชื่อสาขาปลายทาง
+  branchName     String?   // ชื่อสาขาปลายทาง (แสดงผล)
+  syncType       String?   // "datalist" | "labeldata" | "supplier" | "all"
+  recordCount    Int?      @default(0)
+  created        Int?      @default(0)
+  updated        Int?      @default(0)
+  status         String?   @default("pending") // "pending" | "success" | "failed" | "partial"
+  error          String?
+  createdAt      DateTime  @default(now())
+}
+
+model UserActionLog {
+  id           Int      @id @default(autoincrement())
+  company      String?
+  personId     Int?
+  personName   String?  @default("ไม่ทราบผู้ใช้")
+  actionType   String
+  entityType   String
+  entityId     String?
+  entityCode   String?
+  route        String?
+  buttonLabel  String?
+  status       String   @default("success")
+  message      String?
+  errorMessage String?
+  metadata     Json?
+  durationMs   Int?
+  sessionId    String?
+  createdAt    DateTime @default(now())
+
+  @@index([company, createdAt])
+  @@index([company, personName, createdAt])
+  @@index([company, actionType, createdAt])
+  @@index([company, entityType, entityId])
+  @@index([company, status, createdAt])
+}
+
+model SyncSchedule {
+  id              Int       @id @default(autoincrement())
+  company         String?
+  intervalMinutes Int?      @default(60)  // ทุกกี่นาที เช่น 60 = ทุก 1 ชม.
+  syncTypes       String?   @default("datalist,labeldata,supplier") // comma-separated
+  targetBranches  String?   // comma-separated tunnelUrls, ว่าง = ทุกสาขา
+  enabled         Boolean   @default(false)
+  lastRunAt       DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model UsageLabelGroup {
+  id              Int     @id @default(autoincrement())
+  company         String?
+  groupName       String?
+  shortName       String?  @default("")
+  useS            String?  @default("")
+  timeS           String?  @default("")
+  timeuseS        String?  @default("")
+  keepS           String?  @default("")
+  remarkS         String?  @default("")
+
+  @@index([company])
+}
+
+model OtRequest {
+  id            Int       @id @default(autoincrement())
+  idcompany     String?   @default("")
+  personId      Int?      @default(0)
+  person        String?   @default("")
+  otDate        DateTime?
+  startTime     String?   @default("")
+  endTime       String?   @default("")
+  hours         Float?    @default(0)
+  reason        String?   @default("")
+  status        String?   @default("pending")
+  rejectReason  String?   @default("")
+  approvedBy    String?   @default("")
+  approvedDate  DateTime?
+  createdAt     DateTime  @default(now())
+}
+
+// =============================================
+// Omnichannel Chat & Telepharmacy Models
+// =============================================
+
+model ChatChannel {
+  id            Int       @id @default(autoincrement())
+  company       String?   @default("")
+  platform      String    // LINE, FACEBOOK, TIKTOK, WEB
+  channelName   String?   @default("")
+  accessToken   String?   @default("")
+  channelSecret String?   @default("")
+  pageId        String?   @default("")
+  webhookUrl    String?   @default("")
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  contacts      ChatContact[]
+  @@index([company])
+}
+
+model ChatContact {
+  id              Int       @id @default(autoincrement())
+  company         String?   @default("")
+  channelId       Int
+  channel         ChatChannel @relation(fields: [channelId], references: [id])
+  platformUserId  String    // LINE userId, FB PSID, TikTok userId
+  displayName     String?   @default("")
+  avatarUrl       String?   @default("")
+  phone           String?   @default("")
+  email           String?   @default("")
+  tags            String?   @default("")
+  consentGiven    Boolean   @default(false)
+  consentDate     DateTime?
+  lastMessageAt   DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  conversations   ChatConversation[]
+  @@unique([channelId, platformUserId])
+  @@index([company])
+}
+
+model ChatConversation {
+  id            Int       @id @default(autoincrement())
+  company       String?   @default("")
+  contactId     Int
+  contact       ChatContact @relation(fields: [contactId], references: [id])
+  assignedTo    String?   @default("")   // agent/employee name
+  status        String    @default("open") // open, pending, resolved, closed
+  subject       String?   @default("")
+  priority      String?   @default("normal") // low, normal, high, urgent
+  lastMessageAt DateTime?
+  closedAt      DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  messages      ChatMessage[]
+  videoCalls    VideoCall[]
+  @@index([company])
+  @@index([status])
+}
+
+model ChatMessage {
+  id              Int       @id @default(autoincrement())
+  conversationId  Int
+  conversation    ChatConversation @relation(fields: [conversationId], references: [id])
+  senderType      String    // customer, agent, system
+  senderName      String?   @default("")
+  messageType     String    @default("text") // text, image, file, video, audio, sticker, location, richcard
+  content         String?   @default("")
+  mediaUrl        String?   @default("")
+  metadata        String?   @default("{}") // JSON: platformMsgId, quickReplies, etc.
+  isRead          Boolean   @default(false)
+  readAt          DateTime?
+  createdAt       DateTime  @default(now())
+  @@index([conversationId])
+  @@index([createdAt])
+}
+
+model VideoCall {
+  id              Int       @id @default(autoincrement())
+  company         String?   @default("")
+  conversationId  Int
+  conversation    ChatConversation @relation(fields: [conversationId], references: [id])
+  roomId          String    @unique
+  initiatedBy     String?   @default("") // agent name
+  status          String    @default("pending") // pending, ringing, active, ended, missed
+  startedAt       DateTime?
+  endedAt         DateTime?
+  duration        Int?      @default(0) // seconds
+  recordingUrl    String?   @default("")
+  notes           String?   @default("")
+  consentGiven    Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  @@index([company])
+  @@index([roomId])
+}
+
+model ChatQuickReply {
+  id        Int      @id @default(autoincrement())
+  company   String?  @default("")
+  title     String?  @default("")
+  content   String?  @default("")
+  category  String?  @default("")
+  shortcut  String?  @default("")
+  createdAt DateTime @default(now())
+  @@index([company])
+}
+
+
+// ============================================================
+// Telegram Notification
+// ============================================================
+model TelegramBinding {
+  id            Int       @id @default(autoincrement())
+  company       String
+  branchId      Int?
+  chatId        String    @default("")
+  chatTitle     String?   @default("")
+  chatType      String?   @default("")
+  notifySale    Boolean   @default(true)
+  notifyCancel  Boolean   @default(true)
+  notifyHourly  Boolean   @default(true)
+  notifyDaily   Boolean   @default(true)
+  minAmount     Float     @default(0)
+  quietStart    String?   @default("")
+  quietEnd      String?   @default("")
+  bindToken     String    @unique
+  bindExpiresAt DateTime?
+  isActive      Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  @@index([company, branchId])
+  @@index([chatId])
+}
+
+model TelegramNotifyLog {
+  id         Int      @id @default(autoincrement())
+  bindingId  Int
+  eventType  String
+  refType    String?  @default("")
+  refId      Int?
+  payload    String?  @default("")
+  success    Boolean  @default(false)
+  error      String?  @default("")
+  sentAt     DateTime @default(now())
+  @@index([bindingId, sentAt])
+}
+
+
+model DailyClose {
+  id              Int       @id @default(autoincrement())
+  company         String
+  closeDate       DateTime  @db.Date
+  workTimeStart   String?
+  workTimeEnd     String?
+  salesTotal      Float     @default(0)
+  promptpayTotal  Float     @default(0)
+  transferTotal   Float     @default(0)
+  cashTotal       Float     @default(0)
+  otherTotal      Float     @default(0)
+  cashDeliver     Float     @default(0)
+  note            String?
+  b1000           Int       @default(0)
+  b500            Int       @default(0)
+  b100            Int       @default(0)
+  b50             Int       @default(0)
+  b20             Int       @default(0)
+  b10             Int       @default(0)
+  b5              Int       @default(0)
+  b2              Int       @default(0)
+  b1              Int       @default(0)
+  totalCounted    Float     @default(0)
+  diff            Float     @default(0)
+  changeAmount    Float     @default(0)
+  drawerBalance   Float     @default(0)
+  employeeName    String    @default("")
+  branchName      String?
+  status          String    @default("draft")
+  createdBy       String?
+  updatedBy       String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@unique([company, closeDate, employeeName])
+  @@index([company, closeDate])
+  @@index([status])
+}
+
+// ===========================================
+// ตารางสำรองค่าเดิมของ SelfHeal (audit/rollback)
+// สร้างจริงตอนรันด้วย CREATE TABLE IF NOT EXISTS ใน
+// src/lib/selfHeal.ts และ src/lib/lotRelink.ts
+// ประกาศไว้ที่นี่เพื่อไม่ให้ prisma db push สั่ง DROP ทิ้ง
+//
+// ⚠️ log_id ในฐานข้อมูลเป็น SERIAL (มี default nextval) จริง แต่ที่นี่
+// จงใจไม่ใส่ @default(autoincrement()) — Prisma มองข้ามการตรวจ autoincrement
+// ของตารางที่ชื่อขึ้นต้นด้วย "_" (สงวนไว้ให้ implicit relation table) ถ้าใส่ไว้
+// db push จะพยายาม CREATE SEQUENCE ซ้ำแล้วล้มทุกครั้ง
+// แอปเขียนตารางกลุ่มนี้ด้วย raw SQL ล้วน ไม่ได้ insert ผ่าน Prisma Client
+// จึงไม่กระทบการใช้งาน
+// ===========================================
+
+model SelfhealRcitemlistSaleLog {
+  log_id   Int      @id @default(dbgenerated("nextval('_selfheal_rcitemlist_sale_log_log_id_seq'::regclass)"))
+  fixed_at DateTime @default(now()) @db.Timestamptz(6)
+  rc_id    Int
+  company  String?
+  itemcode String?
+  lot      String?
+  qty      Float?
+  freebaht Float?
+  old_sale Float?
+  new_sale Float?
+  balance  Float?
+
+  @@map("_selfheal_rcitemlist_sale_log")
+}
+
+model SelfhealRcitemlistDatercLog {
+  log_id     Int       @id @default(dbgenerated("nextval('_selfheal_rcitemlist_daterc_log_log_id_seq'::regclass)"))
+  fixed_at   DateTime  @default(now()) @db.Timestamptz(6)
+  rc_id      Int
+  company    String?
+  codenames  String?
+  itemcode   String?
+  lot        String?
+  old_daterc DateTime? @db.Timestamp(6)
+  new_daterc DateTime? @db.Timestamp(6)
+
+  @@map("_selfheal_rcitemlist_daterc_log")
+}
+
+model SelfhealLotRelinkLog {
+  log_id   Int      @id @default(dbgenerated("nextval('_selfheal_lot_relink_log_log_id_seq'::regclass)"))
+  fixed_at DateTime @default(now()) @db.Timestamptz(6)
+  company  String?
+  itemcode String?
+  person   String?
+  kind     String
+  ref_id   Int
+  before   Json?
+  after    Json?
+
+  @@map("_selfheal_lot_relink_log")
+}
+
+/// คิวรับสินค้าของหน้าขาย — 1 บิล = 1 คิว
+/// เลขคิวรันใหม่ทุกวันโดยแยกตามบริษัท (ดู @@unique([company, queueDate, queueNo]))
+model SaleQueue {
+  id          Int       @id @default(autoincrement())
+  company     String
+  branch      String?   @default("")
+  /// เลขคิวของวัน เริ่มที่ 1 ใหม่ทุกวัน
+  queueNo     Int
+  /// วันของคิวรูปแบบ YYYY-MM-DD (ตามเวลาเครื่องขาย) — ใช้เป็นขอบเขตของเลขรัน
+  queueDate   String
+  /// เลขที่ออเดอร์บนใบเสร็จ (DDMM-HHmmss) — ใช้กันสร้างคิวซ้ำเมื่อกดชำระซ้ำ
+  orderNo     String?
+  id_salemain Int?
+  customer    String?   @default("")
+  seller      String?   @default("")
+  itemCount   Int       @default(0)
+  totalAmount Float     @default(0)
+  /// สรุปรายการสินค้าสำหรับใบ job และแผงสถานะคิว [{ name, qty, unit }]
+  items       Json?
+  /// waiting = รอทำ | preparing = กำลังทำ | ready = พร้อมรับ | done = รับแล้ว | cancelled = ยกเลิก
+  status      String    @default("waiting")
+  note        String?   @default("")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  readyAt     DateTime?
+  doneAt      DateTime?
+
+  @@unique([company, queueDate, queueNo])
+  @@unique([company, orderNo])
+  @@index([company, queueDate, status])
+}

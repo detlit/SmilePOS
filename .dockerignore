@@ -1,0 +1,62 @@
+# Dependencies
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Build outputs
+.next
+out
+dist
+dist_electron
+
+# Database data (persistent volume)
+pg-data
+data
+
+# Launcher (Electron app - separate)
+launcher
+
+# Windows installer tooling — bundled/ alone is ~1.5GB of Podman + container
+# image archives, and nothing in the app imports from here.
+installer
+SmartCardAgent.exe
+
+# Windows-only smart card helper, 139MB. The app only ever shells out to it by
+# absolute host path at runtime; the runner stage never copies it. Leaving it in
+# made the build context ~200MB, which was enough for podman's context tar to
+# fail mid-transfer ("archive/tar: missed writing N bytes").
+smartcard-agent
+
+# IDE and editor
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment files (use .env.docker instead)
+.env
+.env.local
+.env.*.local
+
+# Git
+.git
+.gitignore
+
+# Misc
+*.md
+*.log
+scratch
+uploads
+temp_*
+*.pdf
+
+# TypeScript build info
+tsconfig.tsbuildinfo
+
+# Test files
+coverage
+.nyc_output

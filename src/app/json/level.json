@@ -1,0 +1,712 @@
+[
+  {
+    "id": 1,
+    "company": "A",
+    "codename": "A1",
+    "main": "หน้าหลัก",
+    "list": "หน้า Dashboard ทั้งหมด",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 2,
+    "company": "A",
+    "codename": "A2",
+    "main": "หน้าหลัก",
+    "list": "จำนวนบิล",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 3,
+    "company": "A",
+    "codename": "A3",
+    "main": "หน้าหลัก",
+    "list": "ยอดขาย",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 4,
+    "company": "A",
+    "codename": "A4",
+    "main": "หน้าหลัก",
+    "list": "ยอดขายต่อบิล",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 5,
+    "company": "A",
+    "codename": "A5",
+    "main": "หน้าหลัก",
+    "list": "ยอดรับ",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 6,
+    "company": "A",
+    "codename": "A6",
+    "main": "หน้าหลัก",
+    "list": "สินค้าขายดี",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 7,
+    "company": "A",
+    "codename": "A7",
+    "main": "หน้าหลัก",
+    "list": "กลุ่มสินค้าขายดี",
+    "level1": "true",
+    "level2": "true",
+    "level3": "true"
+  },
+  {
+    "id": 8,
+    "company": "A",
+    "codename": "A8",
+    "main": "หน้าหลัก",
+    "list": "สินค้าหมดอายุ",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 9,
+    "company": "A",
+    "codename": "A9",
+    "main": "หน้าหลัก",
+    "list": "กราฟทั้งหมด ในหน้าหลัก",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 10,
+    "company": "A",
+    "codename": "B1",
+    "main": "หน้าขาย",
+    "list": "หน้า หน้าขาย ทั้งหมด",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 11,
+    "company": "A",
+    "codename": "B2",
+    "main": "หน้าขาย",
+    "list": "ราคาทุน",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 11.1,
+    "company": "A",
+    "codename": "B3",
+    "main": "หน้าขาย",
+    "list": "ขายสินค้าราคา 0 บาทได้",
+    "level1": false,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 11.2,
+    "company": "A",
+    "codename": "B4",
+    "main": "หน้าขาย",
+    "list": "ล็อกปุ่มกลับในหน้าชำระเงิน (กันทุจริต)",
+    "level1": false,
+    "level2": false,
+    "level3": false
+  },
+  {
+    "id": 11.3,
+    "company": "A",
+    "codename": "B5",
+    "main": "หน้าขาย",
+    "list": "ปรับระดับราคาขายรายสินค้า (ในบิล)",
+    "level1": false,
+    "level2": false,
+    "level3": false
+  },
+  {
+    "id": 12,
+    "company": "A",
+    "codename": "C1",
+    "main": "ข้อมูลสินค้า",
+    "list": "หน้า ข้อมูลสินค้า ทั้งหมด",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 13,
+    "company": "A",
+    "codename": "C2",
+    "main": "ข้อมูลสินค้า",
+    "list": "ค่าหยิบ",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 14,
+    "company": "A",
+    "codename": "C3",
+    "main": "ข้อมูลสินค้า",
+    "list": "ตั้งค่าการหยิบ",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 14.1,
+    "company": "A",
+    "codename": "C4",
+    "main": "ข้อมูลสินค้า",
+    "list": "ราคาทุน",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 15,
+    "company": "A",
+    "codename": "D1",
+    "main": "ข้อมูลสินค้า",
+    "list": "หน้า Stock card",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 15.1,
+    "company": "A",
+    "codename": "D2",
+    "main": "ข้อมูลสินค้า",
+    "list": "หน้า ปรับ Lot และ ยอดคงเหลือ",
+    "level1": false,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 16,
+    "company": "A",
+    "codename": "E1",
+    "main": "วิเคราะห์ สั่งสินค้า",
+    "list": "หน้า วิเคราะห์ สั่งสินค้า ทั้งหมด",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 16.1,
+    "company": "A",
+    "codename": "E2",
+    "main": "วิเคราะห์ สั่งสินค้า",
+    "list": "ราคาทุนเปรียบเทียบ",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 17,
+    "company": "A",
+    "codename": "F1",
+    "main": "รับสินค้า",
+    "list": "หน้า รับสินค้า ทั้งหมด",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 18,
+    "company": "A",
+    "codename": "G1",
+    "main": "ข้อมูลลูกค้า",
+    "list": "หน้า ข้อมูลลูกค้า ทั้งหมด",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 19,
+    "company": "A",
+    "codename": "H1",
+    "main": "ติดตามอาการ",
+    "list": "หน้า ติดตามอาการ ทั้งหมด",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 20,
+    "company": "A",
+    "codename": "I1",
+    "main": "ข้อมูลผู้ขาย",
+    "list": "หน้า ข้อมูลผู้ขาย ทั้งหมด",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 20.1,
+    "company": "A",
+    "codename": "I2",
+    "main": "ข้อมูลลูกค้า",
+    "list": "แก้ไขแต้มสะสม",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 21,
+    "company": "A",
+    "codename": "J1",
+    "main": "รายงาน",
+    "list": "หน้า รายงาน ทั้งหมด",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 22,
+    "company": "A",
+    "codename": "J2",
+    "main": "รายงาน",
+    "list": "จำนวนบิล",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 23,
+    "company": "A",
+    "codename": "J3",
+    "main": "รายงาน",
+    "list": "ยอดขาย",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 24,
+    "company": "A",
+    "codename": "J4",
+    "main": "รายงาน",
+    "list": "ต้นทุน",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 25,
+    "company": "A",
+    "codename": "J5",
+    "main": "รายงาน",
+    "list": "กำไร",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 26,
+    "company": "A",
+    "codename": "J6",
+    "main": "รายงาน",
+    "list": "%กำไร",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 27,
+    "company": "A",
+    "codename": "J7",
+    "main": "รายงาน",
+    "list": "เงินสด",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 28,
+    "company": "A",
+    "codename": "J8",
+    "main": "รายงาน",
+    "list": "เงินโอน",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 29,
+    "company": "A",
+    "codename": "J9",
+    "main": "รายงาน",
+    "list": "ยอดขายต่อบิล",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 30,
+    "company": "A",
+    "codename": "J10",
+    "main": "รายงาน",
+    "list": "ยอดรับสินค้า",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 31,
+    "company": "A",
+    "codename": "J11",
+    "main": "รายงาน",
+    "list": "ใบเสร็จรับเงิน",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 31.1,
+    "company": "A",
+    "codename": "J12",
+    "main": "รายงาน",
+    "list": "รายงานทั้งหมด",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 31.2,
+    "company": "A",
+    "codename": "J13",
+    "main": "รายงาน",
+    "list": "รายงานวิเคราะห์สินค้า",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 31.3,
+    "company": "A",
+    "codename": "J14",
+    "main": "รายงาน",
+    "list": "รายงานวิเคราะห์กลุ่มสินค้า",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 31.4,
+    "company": "A",
+    "codename": "J15",
+    "main": "รายงาน",
+    "list": "รายงานยอดเป้า ค่าหยิบ",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 31.5,
+    "company": "A",
+    "codename": "J16",
+    "main": "รายงาน",
+    "list": "ยกเลิกบิลได้",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 31.6,
+    "company": "A",
+    "codename": "J17",
+    "main": "รายงาน",
+    "list": "เลือกดูรายงานวันที่ย้อนหลัง",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 31.7,
+    "company": "A",
+    "codename": "J18",
+    "main": "รายงาน",
+    "list": "เลือกชื่อผู้ขายได้",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 31.8,
+    "company": "A",
+    "codename": "J19",
+    "main": "รายงาน",
+    "list": "แสดงรายงาน ข.ย.",
+    "level1": false,
+    "level2": true,
+    "level3": false
+  },
+  {
+    "id": 32,
+    "company": "A",
+    "codename": "K1",
+    "main": "เอกสาร",
+    "list": "หน้า เอกสารทั้งหมด",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 33,
+    "company": "A",
+    "codename": "L1",
+    "main": "กำไร-ขาดทุน",
+    "list": "หน้า กำไร-ขาดทุน ทั้งหมด",
+    "level1": false,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 34,
+    "company": "A",
+    "codename": "M1",
+    "main": "โปรโมชั่น",
+    "list": "หน้า โปรโมชั่น ทั้งหมด",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 35,
+    "company": "A",
+    "codename": "N1",
+    "main": "ตั้งค่า",
+    "list": "หน้า ตั้งค่า ทั้งหมด",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 38,
+    "company": "A",
+    "codename": "N2",
+    "main": "ตั้งค่า",
+    "list": "หน้า ข้อมูลลูกค้า",
+    "level1": false,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 39,
+    "company": "A",
+    "codename": "N3",
+    "main": "ตั้งค่า",
+    "list": "หน้า ข้อมูลพนักงาน",
+    "level1": false,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 40,
+    "company": "A",
+    "codename": "N4",
+    "main": "ตั้งค่า",
+    "list": "หน้า ตั้งค่ารูปแบบ ฉลากยา",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 41,
+    "company": "A",
+    "codename": "N5",
+    "main": "ตั้งค่า",
+    "list": "หน้า ตั้งค่า แต้มสะสม",
+    "level1": false,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 42,
+    "company": "A",
+    "codename": "N6",
+    "main": "ตั้งค่า",
+    "list": "หน้า ตั้งค่า QR Payment",
+    "level1": false,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 43,
+    "company": "A",
+    "codename": "N7",
+    "main": "ตั้งค่า",
+    "list": "หน้า ตั้งค่า การมองเห็น",
+    "level1": false,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 44,
+    "company": "A",
+    "codename": "N8",
+    "main": "ตั้งค่า",
+    "list": "หน้า ตั้งค่า เครื่องพิมพ์",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 36,
+    "company": "A",
+    "codename": "O1",
+    "main": "เชื่อมสาขา",
+    "list": "หน้า เชื่อมสาขา ทั้งหมด",
+    "level1": false,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 37,
+    "company": "A",
+    "codename": "O2",
+    "main": "เชื่อมสาขา",
+    "list": "หน้า กำไร-ขาดทุน",
+    "level1": false,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 38,
+    "company": "A",
+    "codename": "P1",
+    "main": "มือถือ",
+    "list": "หน้าหลัก",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 39,
+    "company": "A",
+    "codename": "P2",
+    "main": "มือถือ",
+    "list": "เข้างาน",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 40,
+    "company": "A",
+    "codename": "P3",
+    "main": "มือถือ",
+    "list": "หน้าขาย",
+   "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 41,
+    "company": "A",
+    "codename": "P4",
+    "main": "มือถือ",
+    "list": "ค่าหยิบ",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 42,
+    "company": "A",
+    "codename": "P5",
+    "main": "มือถือ",
+    "list": "สินค้า",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 43,
+    "company": "A",
+    "codename": "P6",
+    "main": "มือถือ",
+    "list": "นับสินค้า",
+    "level1": true,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 44,
+    "company": "A",
+    "codename": "P7",
+    "main": "มือถือ",
+    "list": "รับ",
+    "level1": false,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 44.1,
+    "company": "A",
+    "codename": "P8",
+    "main": "มือถือ",
+    "list": "ปรับยอดและปรับ lot",
+    "level1": false,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 45,
+    "company": "A",
+    "codename": "N9",
+    "main": "ตั้งค่า",
+    "list": "แบ็คอัพข้อมูล",
+    "level1": false,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 46,
+    "company": "A",
+    "codename": "Q1",
+    "main": "Sync สาขา",
+    "list": "หน้า Sync สาขา ทั้งหมด",
+    "level1": false,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 47,
+    "company": "A",
+    "codename": "R1",
+    "main": "โอนข้ามสาขา",
+    "list": "หน้า โอนข้ามสาขา ทั้งหมด",
+    "level1": false,
+    "level2": true,
+    "level3": true
+  },
+  {
+    "id": 48,
+    "company": "A",
+    "codename": "S1",
+    "main": "Stock สาขา",
+    "list": "หน้า Stock สาขา ทั้งหมด",
+    "level1": false,
+    "level2": true,
+    "level3": true
+  }
+]

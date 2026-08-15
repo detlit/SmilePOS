@@ -1,0 +1,4 @@
+﻿code,ProductName,fixname,group,type,subtype,Category,DrugRegistor,Area,Unit,Barcode,Show,Child,CostActual,price,wholesaleprice,online,PriceA,PriceB,PriceC,PriceD,PriceE,PriceF,PriceG,PriceH
+10000,Nifuroxazide 0.218g 60 ml (erfuzide),NIFUROXAZIDE,ANTIDIARRHOEALS,ขย.9,-,ยาน้ำสำหรับเด็ก,,,ขวด,8858670000000,FALSE,FALSE,,,,,,,,,,,,
+10002,Nifuroxazide 0.218g 30 ml (erfuzide),NIFUROXAZIDE,ANTIDIARRHOEALS,ขย.9,NULL,ยาน้ำสำหรับเด็ก,,,ขวด,8858670000000,FALSE,FALSE,,,,,,,,,,,,
+10004,Domperidone  (Motilium) 30 ml,DOMPERIDONE,ANTIEMETICS & ANTIVERTIGO DRUG,ขย.9,NULL,ยาน้ำสำหรับเด็ก,,,ขวด,8850580000000,FALSE,FALSE,,,,,,,,,,,,

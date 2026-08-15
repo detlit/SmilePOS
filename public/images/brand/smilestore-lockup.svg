@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 1246 490" role="img" aria-label="SmileStore POS">
+<title>SmileStore POS</title><g transform="translate(30 145.6)">
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Smile -->
+  <path d="M61.8 33.4A30 20.75 0 1 0 42.5 70A30 20.75 0 1 1 23.2 106.6" stroke="#F2C21C" stroke-width="17"/>
+  <g stroke="#13314F" stroke-width="15">
+    <path d="M100.5 112.5V89"/>
+    <path d="M100.5 89a23.5 23.5 0 0 1 47 0V112.5"/>
+    <path d="M147.5 89a23.5 23.5 0 0 1 47 0V112.5"/>
+    <path d="M221.5 112.5V65.5"/>
+    <path d="M248.5 112.5V27.5"/>
+    <path d="M275.5 89h68a34 23.5 0 1 0-12.15 18"/>
+  </g>
+  <circle cx="221.5" cy="42" r="9.5" fill="#13314F"/>
+  <!-- smile swoosh -->
+  <path d="M96 140q83 84 166 0-83 36-166 0z" fill="#13314F"/>
+
+  <!-- STORE POS -->
+  <g stroke-width="11">
+    <path d="M319.8 148.1A16 11.25 0 1 0 309.5 168A16 11.25 0 1 1 299.2 187.9" stroke="#3E86C7"/>
+    <g stroke="#2A6AAA">
+      <path d="M345.5 145.5h34M362.5 145.5v45"/>
+      <ellipse cx="416.5" cy="168" rx="17" ry="22.5"/>
+      <path d="M453.5 190.5v-45h13a11 11 0 1 1 0 22h-13M466.5 167.5l17 23"/>
+      <path d="M531.5 145.5h-28v45h28M503.5 168h24"/>
+      <path d="M566.5 190.5v-45h13a11 11 0 1 1 0 22h-13"/>
+      <ellipse cx="627.5" cy="168" rx="17" ry="22.5"/>
+      <path d="M690.8 148.1A16 11.25 0 1 0 680.5 168A16 11.25 0 1 1 670.2 187.9"/>
+    </g>
+  </g>
+</g></g>
+     <g transform="translate(770 0) scale(0.95)">
+<g fill="none" stroke="#13314F" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+  <!-- ground shadow -->
+  <ellipse cx="252" cy="476" rx="146" ry="20" fill="#DCE8F4" stroke="none"/>
+
+  <!-- legs -->
+  <path d="M206 356h48v62a24 24 0 0 1-48 0z" fill="#1E3A5F"/>
+  <path d="M266 356h48v62a24 24 0 0 1-48 0z" fill="#1E3A5F"/>
+  <!-- shoes -->
+  <rect x="182" y="416" width="78" height="38" rx="19" fill="#0E2740"/>
+  <rect x="258" y="416" width="78" height="38" rx="19" fill="#0E2740"/>
+
+  <!-- shirt -->
+  <path d="M256 258c-48 0-76 22-76 54v54c0 16 12 28 28 28h96c16 0 28-12 28-28v-54c0-32-28-54-76-54z" fill="#FFFFFF"/>
+
+  <!-- apron neck strap (passes behind the head) -->
+  <path d="M218 288c-4-36 14-50 38-50s42 14 38 50" stroke="#13314F" stroke-width="24"/>
+  <path d="M218 288c-4-36 14-50 38-50s42 14 38 50" stroke="#3E86C7" stroke-width="14"/>
+
+  <!-- apron -->
+  <path d="M214 282h84v40l22 14v42q0 16-16 16H208q-16 0-16-16v-42l22-14z" fill="#3E86C7"/>
+  <rect x="220" y="344" width="72" height="34" rx="8" stroke="#1E5088" stroke-width="7"/>
+  <path d="M256 344v34" stroke="#1E5088" stroke-width="7"/>
+
+  <!-- waving arm -->
+  <path d="M196 296c-38 6-68-4-86-30" stroke="#13314F" stroke-width="42"/>
+  <path d="M196 296c-38 6-68-4-86-30" stroke="#FFFFFF" stroke-width="30"/>
+  <rect x="70" y="196" width="17" height="52" rx="8.5" fill="#F7D8B6"/>
+  <rect x="89" y="188" width="17" height="60" rx="8.5" fill="#F7D8B6"/>
+  <rect x="108" y="192" width="17" height="56" rx="8.5" fill="#F7D8B6"/>
+  <rect x="127" y="202" width="17" height="46" rx="8.5" fill="#F7D8B6"/>
+  <rect x="66" y="228" width="80" height="76" rx="30" fill="#F7D8B6"/>
+  <rect x="52" y="250" width="40" height="22" rx="11" fill="#F7D8B6" transform="rotate(-35 72 261)"/>
+
+  <!-- basket arm (runs behind the grocery bag) -->
+  <path d="M314 292c24 6 36 24 36 44" stroke="#13314F" stroke-width="42"/>
+  <path d="M314 292c24 6 36 24 36 44" stroke="#FFFFFF" stroke-width="30"/>
+
+  <!-- neck -->
+  <rect x="232" y="226" width="48" height="44" rx="14" fill="#F7D8B6"/>
+
+  <!-- head -->
+  <ellipse cx="168" cy="192" rx="19" ry="24" fill="#F7D8B6"/>
+  <ellipse cx="344" cy="192" rx="19" ry="24" fill="#F7D8B6"/>
+  <path d="M256 90c56 0 90 34 90 88s-34 88-90 88-90-34-90-88 34-88 90-88z" fill="#F7D8B6"/>
+  <path d="M170 172c-2-54 38-86 86-86s88 32 86 86c-8-32-40-54-86-54s-78 22-86 54z" fill="#4B2E1F" stroke="none"/>
+
+  <!-- eyebrows / eyes -->
+  <path d="M198 148q22-12 42-2" stroke-width="9"/>
+  <path d="M272 146q20-10 42 2" stroke-width="9"/>
+  <ellipse cx="220" cy="176" rx="16" ry="20" fill="#0E2740" stroke="none"/>
+  <ellipse cx="292" cy="176" rx="16" ry="20" fill="#0E2740" stroke="none"/>
+  <circle cx="226" cy="169" r="6" fill="#FFFFFF" stroke="none"/>
+  <circle cx="298" cy="169" r="6" fill="#FFFFFF" stroke="none"/>
+
+  <!-- cheeks -->
+  <ellipse cx="196" cy="218" rx="17" ry="11" fill="#F4A9A0" stroke="none" opacity=".85"/>
+  <ellipse cx="316" cy="218" rx="17" ry="11" fill="#F4A9A0" stroke="none" opacity=".85"/>
+
+  <!-- mouth -->
+  <path d="M222 208q34-4 68 0 2 42-34 42t-34-42z" fill="#7C2F2F"/>
+  <path d="M227 210q29-4 58 0v9q-29 3-58 0z" fill="#FFFFFF" stroke="none"/>
+  <path d="M238 238q18-12 36 0 0 12-18 12t-18-12z" fill="#E4736B" stroke="none"/>
+
+  <!-- cap -->
+  <path d="M170 128c0-52 38-82 86-82s86 30 86 82z" fill="#3E86C7"/>
+  <path d="M334 112c52-6 86 16 88 40 1 14-24 18-56 12-22-4-34-18-36-34z" fill="#2A6AAA"/>
+  <rect x="164" y="114" width="184" height="20" rx="10" fill="#2A6AAA"/>
+  <circle cx="256" cy="44" r="11" fill="#2A6AAA"/>
+  <path d="M226 86q30 26 60 0-30 14-60 0z" fill="#F2C21C" stroke="none"/>
+
+  <!-- grocery bag -->
+  <path d="M348 306c-10-32 4-54 20-48-8 16-6 34 4 48z" fill="#3E9B52"/>
+  <path d="M400 258q2-12 12-14" stroke="#5C3A21" stroke-width="7"/>
+  <circle cx="400" cy="284" r="26" fill="#EF4444"/>
+  <path d="M412 244c12-6 24 0 22 10-10 6-20 0-22-10z" fill="#3E9B52" stroke-width="7"/>
+  <rect x="428" y="252" width="26" height="58" rx="13" fill="#DDA455" stroke-width="8" transform="rotate(14 441 281)"/>
+  <path d="M330 328v66q0 16 16 16h90q16 0 16-16v-66z" fill="#D9C4A9"/>
+  <path d="M322 304h138l-8 28H330z" fill="#BFA688"/>
+  <path d="M383 336v70" stroke="#BFA688" stroke-width="7"/>
+
+  <!-- hand on the bag -->
+  <ellipse cx="336" cy="340" rx="30" ry="24" fill="#F7D8B6"/>
+  <path d="M322 332h26M322 346h22" stroke="#13314F" stroke-width="6"/>
+</g></g>
+</svg>

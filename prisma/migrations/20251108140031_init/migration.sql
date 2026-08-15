@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "public"."Level" ALTER COLUMN "level1" SET DEFAULT '',
+ALTER COLUMN "level2" SET DEFAULT '',
+ALTER COLUMN "level3" SET DEFAULT '';

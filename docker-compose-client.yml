@@ -1,0 +1,111 @@
+# Docker Compose สำหรับเครื่องลูกค้า
+# ใช้คำสั่ง: docker compose -f docker-compose-client.yml up -d
+
+services:
+  # ===========================================
+  # Database Service (PostgreSQL)
+  # ===========================================
+  postgres:
+    image: postgres:15-alpine
+    container_name: pos-postgres-smile
+    restart: always
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydb
+      TZ: Asia/Bangkok
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./pg-data:/var/lib/postgresql/data
+    networks:
+      - pos-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U myuser -d mydb" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ===========================================
+  # Web Application (Next.js)
+  # ===========================================
+  app:
+    build: .
+    image: d2poption/smilestore:v1
+    container_name: pos-app-smile
+    restart: always
+    ports:
+      - "4000:3000"
+    environment:
+      DATABASE_URL: postgresql://myuser:mypassword@postgres:5432/mydb?schema=public
+      NEXT_PUBLIC_API_URL: "http://localhost:3000"
+      TZ: Asia/Bangkok
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - pos-network
+    volumes:
+      # - ./public/uploads:/app/.next/standalone/public/uploads
+      # รูปภาพ (โลโก้, สินค้า, QR พร้อมเพย์)
+      - ./data/uploads:/app/public/uploads
+      # Auto backup JSON
+      - ./data/backups:/app/uploads/backups
+      # เอกสาร PDF แนบ (ใบเสนอราคา, ใบสั่งซื้อ)
+      - ./data/doc:/app/uploads/doc
+
+  # ===========================================
+  # Cloudflare Tunnel (External Access)
+  # ===========================================
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: pos-cloudflared-smileP
+    restart: always
+    # แก้ไขบรรทัด command ด้านล่างนี้
+    command: tunnel --protocol http2 run
+    environment:
+      # ตั้งค่าใน .env (ห้าม hardcode ค่าจริงลงไฟล์นี้ — ไฟล์นี้ขึ้น git)
+      - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+    depends_on:
+      - app
+    networks:
+      - pos-network
+
+
+  # ===========================================
+  # pgAdmin (Database Management)
+  # ===========================================
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pos-pgadmin-smile
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "5051:80"
+    networks:
+      - pos-network
+    depends_on:
+      - postgres
+
+networks:
+  pos-network:
+    driver: bridge
+
+# ===========================================
+# วิธีติดตั้งและใช้งาน
+# ===========================================
+# 1. ติดตั้ง Docker Desktop: https://www.docker.com/products/docker-desktop
+# 2. เปิด Docker Desktop Settings > General > เลือก "Start Docker Desktop when you sign in to your computer"
+# 3. สร้างโฟลเดอร์สำหรับเก็บข้อมูล:
+#    - สร้างโฟลเดอร์ใหม่ เช่น C:\SmilePOS
+#    - วางไฟล์ docker-compose-client.yml ในโฟลเดอร์นี้
+#    - สร้างโฟลเดอร์ data\uploads, data\backups, data\doc ในโฟลเดอร์นี้
+# 4. เปิด Terminal/PowerShell ที่โฟลเดอร์นั้น แล้วรัน:
+#    docker compose -f docker-compose-client.yml up -d
+# 5. เข้าใช้งานที่: http://localhost:4000
+# 6. pgAdmin: http://localhost:5050 (admin@admin.com / root)
+#
+# หมายเหตุ: restart: always จะทำให้ container เริ่มทำงานอัตโนมัติ
+#           เมื่อ Docker Desktop เปิดขึ้นมา

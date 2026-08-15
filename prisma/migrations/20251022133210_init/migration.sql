@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "public"."DocMain" ADD COLUMN     "qt_date" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP;

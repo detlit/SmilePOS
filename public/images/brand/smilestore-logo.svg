@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 712 196" role="img" aria-label="SmileStore POS">
+<title>SmileStore POS</title>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Smile -->
+  <path d="M61.8 33.4A30 20.75 0 1 0 42.5 70A30 20.75 0 1 1 23.2 106.6" stroke="#F2C21C" stroke-width="17"/>
+  <g stroke="#13314F" stroke-width="15">
+    <path d="M100.5 112.5V89"/>
+    <path d="M100.5 89a23.5 23.5 0 0 1 47 0V112.5"/>
+    <path d="M147.5 89a23.5 23.5 0 0 1 47 0V112.5"/>
+    <path d="M221.5 112.5V65.5"/>
+    <path d="M248.5 112.5V27.5"/>
+    <path d="M275.5 89h68a34 23.5 0 1 0-12.15 18"/>
+  </g>
+  <circle cx="221.5" cy="42" r="9.5" fill="#13314F"/>
+  <!-- smile swoosh -->
+  <path d="M96 140q83 84 166 0-83 36-166 0z" fill="#13314F"/>
+
+  <!-- STORE POS -->
+  <g stroke-width="11">
+    <path d="M319.8 148.1A16 11.25 0 1 0 309.5 168A16 11.25 0 1 1 299.2 187.9" stroke="#3E86C7"/>
+    <g stroke="#2A6AAA">
+      <path d="M345.5 145.5h34M362.5 145.5v45"/>
+      <ellipse cx="416.5" cy="168" rx="17" ry="22.5"/>
+      <path d="M453.5 190.5v-45h13a11 11 0 1 1 0 22h-13M466.5 167.5l17 23"/>
+      <path d="M531.5 145.5h-28v45h28M503.5 168h24"/>
+      <path d="M566.5 190.5v-45h13a11 11 0 1 1 0 22h-13"/>
+      <ellipse cx="627.5" cy="168" rx="17" ry="22.5"/>
+      <path d="M690.8 148.1A16 11.25 0 1 0 680.5 168A16 11.25 0 1 1 670.2 187.9"/>
+    </g>
+  </g>
+</g>
+</svg>
