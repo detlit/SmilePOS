@@ -132,6 +132,7 @@ import { useHoldBillStore } from "./useHoldBillStore";
 import CustomerRegisterModal from "./CustomerRegisterModal";
 import SaleQueuePanel from "./SaleQueuePanel";
 import CustomerCommand from "./CustomerCommand";
+import TableLayoutModal from "./TableLayoutModal";
 import { useSaleQueueStore } from "./useSaleQueueStore";
 import { queueDateOf } from "@/lib/saleQueue";
 import { buildJobTicketHtml, buildQueueBadgeHtml } from "./queuePrint";
@@ -145,7 +146,7 @@ import {
   SHOW_PRODUCT_INDICATION,
   SHOW_PRODUCT_SIDE_CARD,
 } from "./salesUiFlags";
-import { AlertTriangle, BadgePercent, Banknote, ChevronLeft, ChevronRight, CircleCheck, Coins, CreditCard, Eye, EyeOff, Gift, HeartPulse, ImageIcon, Info, Lock, Package, PauseCircle, Pill, Printer, ReceiptText, RotateCcw, Search, Trash2, UserPlus, UserRound, Wallet } from "lucide-react";
+import { AlertTriangle, BadgePercent, Banknote, ChevronLeft, ChevronRight, CircleCheck, Coins, CreditCard, Eye, EyeOff, Gift, Grid3X3, HeartPulse, ImageIcon, Info, Lock, Package, PauseCircle, Pill, Printer, ReceiptText, RotateCcw, Search, Trash2, UserPlus, UserRound, Wallet } from "lucide-react";
 import { DEFAULT_EXPIRY_COLOR_RULES, colorWithAlpha, formatExpiryDaysLabel, getExpiryDaysLeft, getExpiryRuleForDate, getReadableTintTextColor, normalizeExpiryColorRules, type ExpiryColorRule } from "@/lib/expiryColorRules";
 import { normalizeCostPriceMode, getCachedCostPriceMode, costPriceModeLabel, type CostPriceMode } from "@/lib/costPriceMode";
 import { lotUnitCost } from "@/lib/lotCost";
@@ -486,6 +487,9 @@ function BodyTabSale(idDatalist: any) {
 
   // Hold Bill Store
   const holdBillStore = useHoldBillStore();
+
+  // Table Layout Modal (โหมดร้านอาหาร)
+  const [showTableLayout, setShowTableLayout] = useState(false);
 
   // Focus Refs for Sales Process
   const receiveInputRef = useRef<HTMLInputElement>(null);
@@ -13588,9 +13592,19 @@ list.map(num => num).reduce((acc, curr) => acc + curr.total, 0)>=Number(a.pay_co
           className="col-sm"
           style={{ order: 4, flex: '0 0 236px', maxWidth: 236, minWidth: 0, overflow: 'hidden', padding: 0 }}>
           <div className={styles.posSideColumn}>
+            <button
+              type="button"
+              className={styles.tableLayoutBtn}
+              onClick={() => setShowTableLayout(true)}
+              title="จัดวาง Layout โต๊ะ"
+            >
+              <Grid3X3 size={15} strokeWidth={2.2} />
+              <span>จัดโต๊ะ</span>
+            </button>
             <CustomerCommand layout="stack" />
             <SaleQueuePanel company={companyS} />
           </div>
+          <TableLayoutModal open={showTableLayout} onClose={() => setShowTableLayout(false)} />
         </div>
       )}
 
